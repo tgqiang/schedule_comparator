@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<!--manual.html-->
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="main2.css">
+    <script src="jquery.js"></script>
+    <script src="jquery-ui.js"></script>
+    <script src="jquery-ui.multidatespicker.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <title>Schedule Comparator</title>
+  </head>
+
+  <body>
+    <div class="nav">
+      <div class="container">
+        <ul class="pull-left">
+          <li><a href="Schedule%20Comparator.html">Home</a></li>
+        </ul>
+
+        <ul class="pull-right">
+          <h3>Useful links</h3>
+          <div class="accordion">
+            <h3>NUS</h3>
+            <ul>
+              <li><a href="http://www.nusmods.com/" target="_blank">NUSMods</a></li>
+              <li><a href="http://www.comp.nus.edu.sg/" target="_blank">NUS SoC</a></li>
+              <li><a href="http://www.cors.nus.edu.sg/" target="_blank">NUS CORS</a></li>
+            </ul>
+
+            <h3>Tools</h3>
+            <ul>
+              <li><a href="https://drive.google.com/" target="_blank">Google Drive</a></li>
+              <li><a href="https://www.google.com/calendar/" target="_blank">Google Calendar</a></li>
+            </ul>
+          </div>  
+        </ul>
+      </div>
+    </div>
+
+    <div id="manual-page" class="jumbotron">
+      <div id="center" class="container">
+        <h2>Manual Entry</h2>
+        <br>
+        
+        <div id="dialog-form" title="Add a member">
+ 
+          <form>
+            <fieldset>
+              <label for="name">Name</label>
+              <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+              <label for="dates">Dates available</label>
+              <input type="text" name="dates" id="dates" class="text ui-widget-content ui-corner-all" multiple>
+ 
+              <!-- Allow form submission with keyboard without duplicating the dialog button -->
+              <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+          </form>
+        </div>
+ 
+ 
+        <div id="users-contain" class="ui-widget">
+          <h3>Existing Users:
+            <button id="reset-table">Reset list</button>
+            <button id="compute">Done</button>
+          </h3>
+          <table id="users" class="ui-widget ui-widget-content">
+            <thead>
+              <tr class="ui-widget-header ">
+                <th id="name-heading">Name</th>
+                <th id="date-heading">Dates available</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <button id="create-user">Add new member</button>
+      </div>
+    </div>
+
+  </body>
+</html>
