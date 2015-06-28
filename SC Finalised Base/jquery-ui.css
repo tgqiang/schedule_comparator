@@ -1,3 +1,7 @@
+/*Added the arrows to the ui-datepicker .ui-datepicker-prev span{ abd after span*/
+
+
+
 /*! jQuery UI - v1.11.4 - 2015-03-11
 * http://jqueryui.com
 * Includes: core.css, accordion.css, autocomplete.css, button.css, datepicker.css, dialog.css, draggable.css, menu.css, progressbar.css, resizable.css, selectable.css, selectmenu.css, slider.css, sortable.css, spinner.css, tabs.css, tooltip.css, theme.css
@@ -67,6 +71,15 @@
 ----------------------------------*/
 
 /* states and images */
+/*
+*
+*
+*
+*FOR STRETCHING AND BUTTONS
+*
+*
+*
+* */
 .ui-icon {
 	display: block;
 	text-indent: -99999px;
@@ -254,14 +267,40 @@ button.ui-button::-moz-focus-inner {
 .ui-datepicker .ui-datepicker-next-hover {
 	right: 1px;
 }
-.ui-datepicker .ui-datepicker-prev span,
-.ui-datepicker .ui-datepicker-next span {
+
+/*
+*		  *
+*		  *
+* EDITED! *
+*		  *
+*		  *
+*/
+.ui-datepicker .ui-datepicker-prev span{
+	width: 0;
+	height: 0;
+	border-top: 8px solid transparent;
+	border-right: 16px solid white;
+	border-bottom: 8px solid transparent;
 	display: block;
 	position: absolute;
 	left: 50%;
 	margin-left: -8px;
 	top: 50%;
 	margin-top: -8px;
+}
+.ui-datepicker .ui-datepicker-next span {
+	width: 0;
+	height: 0;
+	border-top: 8px solid transparent;
+	border-left: 16px solid white;
+	border-bottom: 8px solid transparent;
+	display: block;
+	position: absolute;
+	left: 50%;
+	margin-left: -8px;
+	top: 50%;
+	margin-top: -8px;
+	
 }
 .ui-datepicker .ui-datepicker-title {
 	margin: 0 2.3em;

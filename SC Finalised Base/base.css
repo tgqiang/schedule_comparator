@@ -1,11 +1,18 @@
-/* main2.css */
+/* Changes on 24 June 2015 */
+/* under accordion: added the z-index. under jumbotron, changed the rgb colours and include transparency*/
+/* added .highlight */
+
+/* base.css */
+/* BODY */
 body {
 	margin: 0;
-	background-image: url(http://www.walltor.com/images/wallpaper/clock-and-time--abstract-concept-of-time-94152.jpg);
+	background-image: url(background.jpg);
 	background-size: cover;
 	background-repeat: no-repeat;
 }
 
+/* ========== NAVIGATION ========== */
+/* The background of the top grey portion */
 .nav {
 	background-color: rgba(186, 186, 186, 0.8);/* #BABABA */;
 	height: 130px;
@@ -15,17 +22,29 @@ body {
 	margin-top: 30px;
 }
 
+/* USEFUL LINKS ACCORDION */
 .accordion {
 	width: 550px;
+	z-index:1;
 }
 
 .accordion h3 {
 	text-align: center;
+	z-index:1;
 }
+/* !USEFUL LINKS ACCORDION */
 
 .nav h3 {
 	display: inline;
 	font-size: 20px;
+}
+
+/* this is to show focus when clicked on the .nav h3 */
+.highlight{
+	-webkit-box-shadow: 0 0 8px #FFFFFF;
+	-moz-box-shadow: 0 0 8px #FFFFFF;
+	box-shadow: 0 0 8px #FFFFFF;
+	cursor:pointer;
 }
 
 .nav li {
@@ -35,24 +54,30 @@ body {
 
 .nav a {
 	padding: 10px;
-	border: 1px solid black;
-	margin: 0px;
+	border: 2px solid black;
+	border-radius: 10%;
+	margin: auto;
 	font-family: "Tahoma", Geneva, sans-serif;
 	font-size: 20px;
-	text-decoration: none;
-	color: blue;
+	text-decoration: bold;
+	background: rgba(255, 255, 255,0.5);
+
 }
 
 .nav a:hover {
 	text-decoration: underline;
-	color: green;
+	color: orange;
 }
+/* ========== !NAVIGATION ========== */
 
+/* ========== JUMBOTRON ========== */
+
+/* this is the grey box */
 .jumbotron {
 	margin-top: 50px;
-	background-color: #BABABA;
-	opacity: 0.8;
-	height: 300px;
+	background: rgba(186, 186, 186,0.8);
+	height: 400px;
+	z-index: 0;
 }
 
 .jumbotron h1, p {
@@ -64,7 +89,9 @@ body {
 .jumbotron#help, .jumbotron#manual-page, .jumbotron#upload-page {
 	height: 700px;
 }
+/* ========== !JUMBOTRON ========== */
 
+/* ========== CONTAINER ========== */
 .container {
 	display: inline;
 }
@@ -77,37 +104,9 @@ body {
 	text-align: center;
 	font-size: 15px;
 }
+/* ========== !CONTAINER ========== */
 
-.col-md-5 {
-	/* background-color: rgba(186, 186, 186, 0.8); #BABABA */;
-	text-align: center;
-	padding: 50px;
-}
-
-#manual {
-	background-image: url(http://ubcmunsa.com/wp-content/uploads/2014/06/512px-Calendar_font_awesome.svg_.png);
-	background-size: 100% 100%;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-#upload {
-	background-image: url(https://cdn0.iconfinder.com/data/icons/Free-Icons-Shimmer-01-Creative-Freedom/256/open.png);
-	background-size: auto;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-#manual h3, p, #upload h3, p {
-	background-color: rgba(186, 186, 186, 0.8);
-	color: black;
-	text-decoration: bold;
-}
-
-.jumbotron a, .col-md-5#manual a, .col-md-5#upload a {
-	color: blue;
-}
-
+/* ========== CSS FOR MANUAL FORM ========== */
 fieldset {
 	padding:0;
 	border:0;
@@ -141,3 +140,5 @@ div#users-contain table td, div#users-contain table th {
 #date-heading {
 	width: 1300px;
 }
+
+/* ========== !CSS FOR MANUAL FORM ========== */

@@ -1,25 +1,85 @@
+<?php
+  session_start();
+  
+  /* CREATE CONNECTION */
+  $mysqli = new mysqli('localhost', 'root', '', 'schedulecomparator');
+  
+  /* CHECKS CONNECTION */
+  if ($mysqli->connect_errno) {
+    echo $mysqli->connect_error;
+    die("MySQL connection failed.");
+  }
+
+  /* IF USER EXITS PROGRAM */
+  if (isset($_GET['exit'])) {
+    $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+    $mysqli->close();
+    session_destroy();
+    header("Location: Schedule%20Comparator.html");
+  }
+
+  /* CREATE */
+  function createSession($db) {
+    // sql query to create table
+    $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
+    /*
+    if ($result === TRUE) {
+        $msg = "Table " . $_SESSION['sessionID'] . " created successfully.";
+        print $msg;
+    } else {
+        echo $db->errno;
+        $msg = "Error creating table: " . $db->error;
+        print $msg;
+    }
+    */
+  }
+
+  /* JOIN */
+  function joinSession($db) {
+    // sql query to create table
+    $result = $db->query("SELECT * FROM " . $_SESSION['sessionID']);
+    /*
+    if ($result !== FALSE) {
+        $msg = "Table " . $_SESSION['sessionID'] . " retrieved successfully.";
+        print $msg;
+    } else {
+        $msg = "Error retrieving table: " . $db->error;
+        print $msg;
+    }
+    */
+  }
+
+  if (isset($_SESSION['create'])) {
+    createSession($mysqli);
+  }
+  else if (isset($_SESSION['join'])) {
+    joinSession($mysqli);
+  }
+  else {
+    echo "Variables lost.";
+  }
+?>
 <!DOCTYPE HTML>
 <!--manual.html-->
 <html>
   <head>
+    <!-- ALL STYLES AND SCRIPTS HERE -->
     <link type="text/css" rel="stylesheet" href="bootstrap.css">
     <link type="text/css" rel="stylesheet" href="jquery-ui.css">
-    <link type="text/css" rel="stylesheet" href="main2.css">
+    <link type="text/css" rel="stylesheet" href="base.css">
     <script src="jquery.js"></script>
     <script src="jquery-ui.js"></script>
     <script src="jquery-ui.multidatespicker.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="manual.js"></script>
     <title>Schedule Comparator</title>
   </head>
 
   <body>
     <div class="nav">
       <div class="container">
-        <ul class="pull-left">
-          <li><a href="Schedule%20Comparator.html">Home</a></li>
-        </ul>
 
         <ul class="pull-right">
+          <!-- USEFUL LINKS IN ACCORDION EFFECT -->
           <h3>Useful links</h3>
           <div class="accordion">
             <h3>NUS</h3>
@@ -41,17 +101,18 @@
 
     <div id="manual-page" class="jumbotron">
       <div id="center" class="container">
+        <!-- MANUAL ENTRY INTERFACE -->
         <h2>Manual Entry</h2>
         <br>
-        
+
         <div id="dialog-form" title="Add a member">
- 
+          <!-- FORM FOR MANUAL ENTRY -->
           <form>
             <fieldset>
               <label for="name">Name</label>
               <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
               <label for="dates">Dates available</label>
-              <input type="text" name="dates" id="dates" class="text ui-widget-content ui-corner-all" multiple>
+              <input type="text" name="dates" id="dates" class="text ui-widget-content ui-corner-all" onblur="closeDatePicker()" multiple>
  
               <!-- Allow form submission with keyboard without duplicating the dialog button -->
               <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
@@ -59,7 +120,7 @@
           </form>
         </div>
  
- 
+        <!-- THIS TABLE UPDATES THE GROUP'S SCHEDULES -->
         <div id="users-contain" class="ui-widget">
           <h3>Existing Users:
             <button id="reset-table">Reset list</button>
@@ -77,6 +138,11 @@
           </table>
         </div>
         <button id="create-user">Add new member</button>
+        <br>
+        <br>
+        <form action="manual.php" method="get">
+          <p>Session initialised/joined. To exit, <input type="submit" name="exit" value="click here">.</p>
+        </form>
       </div>
     </div>
 

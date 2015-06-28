@@ -1,43 +1,42 @@
-// ====== script.js ====== //
+/*Change the date to start from today*/
 
+
+// ====== manual.js ====== //
+
+/* TEMPORARILY FOR MANUAL.HTML */
 var database = {
     numUsers: 0,
     date_string: ""
   };
 
-//var start_compute = false;
-
+/* READY FUNCTIONS */
 $(document).ready(function() {
-
+  // ACCORDION EFFECT FOR USEFUL LINKS
 	$(".accordion").accordion({collapsible: true, active: false});
-
-  $("#help").dialog({
-    width: 500,
-    height: 500,
-    autoOpen: false,
-    show: {
-      effect: "blind",
-      duration: 500
-    },
-    hide: {
-      effect: "blind",
-      duration: 500
-    }
-  });
-
-  $("#help-trigger").click(function() {
-    $("#help").dialog("open");
-  });
-
-	//============ FORM ============//
+	$(".titles").hover(
+		function(){
+			$(this).addClass('highlight');
+		},
+		function(){
+			$(this).removeClass('highlight');
+		}
+	);
+  
+	/* ========== MANUAL.HTML USER FORM SCRIPTING ========== */
   var dialog, form,
  
   name = $("#name"),
-  dates = $("#dates").multiDatesPicker({
-            dateFormat: "yy-mm-dd"
-  });
-  allFields = $([]).add(name).add(dates);
 
+  /*EDITED*/
+  dates = $('#dates').multiDatesPicker({
+	dateFormat: "yy-mm-dd",
+	minDate: 0,
+  });
+  /*EDITED*/
+  
+  /*allFields = $([]).add(name).add(dates);*/
+
+  /*This will check if name is filled or not*/
   function name_Fill_Validate(inputName) {
     if (inputName.val().length === 0) {
       window.alert("Name not filled.");
@@ -46,7 +45,7 @@ $(document).ready(function() {
       return validate(inputName.val());
     }
   }
-
+  /*This will check if date is filled or not*/
   function isDateFilled(inputDate) {
     if (inputDate.val().length === 0) {
       var proceed = window.confirm("Date field is empty. Proceed?");
@@ -57,9 +56,10 @@ $(document).ready(function() {
   }
  
   function addUser() {
- 	  var valid = name_Fill_Validate(name) &&
- 	  			  		isDateFilled(dates);
- 
+ 	 var valid = name_Fill_Validate(name) &&
+ 	  			  		isDateFilled(dates);					
+						
+	/*THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED*/
     if (valid) {
       if (database.date_string === "") {
         database.date_string += dates.val();
@@ -116,10 +116,11 @@ $(document).ready(function() {
     var test = (database.date_string.split(", ").sort(datesort));
     compute_Dates(test, database.numUsers);
   });
-
-  //============ !FORM ============//
+  /* ========== !MANUAL.HTML USER FORM SCRIPTING ========== */
 })
 
+/* ========== VALIDATION AND COMPUTATION FUNCTIONS FOR MANUAL.HTML USER FORM ========== */
+// the function to compute the dates that every single person in the group is free
 function compute_Dates(dateArray, totalUsers) {
   var count = 1;
   var result = "";
@@ -144,12 +145,14 @@ function compute_Dates(dateArray, totalUsers) {
    }
 }
 
+// the Java equivalent of the Comparator object
 function datesort(date1, date2) {
   var a = new Date(date1);
   var b = new Date(date2);
   return a - b;
 }
 
+// the function to validate input data for manual form
 function validate(inputName) {
   var keywords = ["select",
                   "update",
@@ -167,7 +170,11 @@ function validate(inputName) {
 
   var sample = inputName.toLowerCase();
 
-  if (sample.replace(/[a-zA-Z\s]/g,"").length > 0) {
+  if (sample.length === 0) {
+    window.alert("Input field is empty.");
+    return false;
+  }
+  else if (sample.replace(/[a-zA-Z\s]/g,"").length > 0) {
     window.alert("Input name should only contain a-z or A-Z. Please enter name again.");
     return false;
   }
@@ -181,3 +188,9 @@ function validate(inputName) {
     return true;
   }
 }
+
+function closeDatePicker() {
+  $('#dates').multiDatesPicker('hide');
+}
+
+/* ========== !VALIDATION AND COMPUTATION FUNCTIONS FOR MANUAL.HTML USER FORM ========== */
