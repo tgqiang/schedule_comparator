@@ -1,7 +1,5 @@
-/*Change the date to start from today*/
-
-
 // ====== manual.js ====== //
+var xmlhttp = new XMLHttpRequest();
 
 /* TEMPORARILY FOR MANUAL.HTML */
 var database = {
@@ -21,6 +19,7 @@ $(document).ready(function() {
 			$(this).removeClass('highlight');
 		}
 	);
+  $("#edit-self").hide();
   
 	/* ========== MANUAL.HTML USER FORM SCRIPTING ========== */
   var dialog, form,
@@ -56,27 +55,23 @@ $(document).ready(function() {
   }
  
   function addUser() {
- 	 var valid = name_Fill_Validate(name) &&
- 	  			  		isDateFilled(dates);					
-						
-	/*THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED*/
+ 	 /* THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED */
+   var valid = name_Fill_Validate(name) &&
+ 	  			  		isDateFilled(dates);
+    
     if (valid) {
-      if (database.date_string === "") {
-        database.date_string += dates.val();
-      }
-      else {
-        database.date_string += (", " + dates.val());
-      }
-
-      database.numUsers += 1;
-
-      $("#users tbody").append("<tr id=" + "entry" + ">" +
-        "<td id=" + "entry" + ">" + name.val() + "</td>" +
-        "<td id=" + "entry" + ">" + dates.val() + "</td>" +
-      "</tr>" );
-      dialog.dialog("close");
-    }      
-    return valid;
+        /*
+        xmlhttp.open('get', 'addEntry.php', true);
+        xmlhttp.send();
+        console.log(xmlhttp.responseText);
+        */
+        $.get('addEntry.php', {person: name.val(), dates: dates.val()}, function() { window.alert("Successfully added.") });
+        $("#create-user").hide();
+        $("#edit-self").show();
+    }
+    
+    database.numUsers += 1;
+    dialog.dialog("close");     
   }
  
   dialog = $("#dialog-form").dialog({
@@ -85,7 +80,7 @@ $(document).ready(function() {
     width: 350,
     modal: true,
     buttons: {
-      "Add a member": addUser,
+      "Add your entry": addUser,
       Cancel: function() {
         dialog.dialog("close");
       }
@@ -100,22 +95,32 @@ $(document).ready(function() {
     event.preventDefault();
     addUser();
   });
- 
+  
+  // open dialog for adding self entry
   $("#create-user").button().on("click", function() {
     dialog.dialog("open");
   });
 
+  // empties the table and resets 'database' variable (TO BE REMOVED)
   $("#reset-table").button().on("click", function() {
     $("tr#entry, td#entry").remove();
     database.numUsers = 0;
     database.date_string = "";
+    //*
+    $("#users tbody").load('refreshTable.php', function(result) {
+      //$("#users tbody").append(result);
+      alert("Table refreshed.");
+    });
+    //*/
   });
 
+  // computes the common dates (PLACEHOLDER)
   $("#compute").button().on("click", function() {
     database.date_string += ", ";
     var test = (database.date_string.split(", ").sort(datesort));
     compute_Dates(test, database.numUsers);
   });
+
   /* ========== !MANUAL.HTML USER FORM SCRIPTING ========== */
 })
 

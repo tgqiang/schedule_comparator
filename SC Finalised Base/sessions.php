@@ -10,8 +10,8 @@
     die("MySQL connection failed.");
   }
   
-  if (isset($_GET['id_init']) && isset($_GET['option']) && isset($_GET['submit'])) {
-    $_SESSION['sessionID'] = $_GET['id_init'];
+  if (isset($_GET['id_create']) && isset($_GET['option']) && isset($_GET['submit'])) {
+    $_SESSION['sessionID'] = $_GET['id_create'];
     $usedID = $mysqli->query("DESCRIBE " . $_SESSION['sessionID']);
     if ($usedID !== FALSE) {
       $mysqli->close();
@@ -23,21 +23,21 @@
       $_SESSION['create'] = true;
       if ($_GET['option'] === "Manual comparison") {
         $_SESSION['manual'] = true;
-        header("Location: ./manual.php?sessionID=" . $_GET['id_init']);
+        header("Location: ./manual.php?sessionID=" . $_GET['id_create']);
       }
       else if ($_GET['option'] === "Timetable comparison") {
         $_SESSION['timetable'] = true;
-        header("Location: ./upload.php" . "?sessionID=" . $_GET['id_init']);
+        header("Location: ./upload.php" . "?sessionID=" . $_GET['id_create']);
       }
       else {
 
       }
     }
   }
-  else if (isset($_GET['id_init']) && !isset($_GET['option']) && isset($_GET['submit'])) {
-    $_SESSION['sessionID'] = $_GET['id_init'];
+  else if (isset($_GET['id_join']) && !isset($_GET['option']) && isset($_GET['submit'])) {
+    $_SESSION['sessionID'] = $_GET['id_join'];
     $_SESSION['join'] = true;
-    header("Location: ./manual.php?sessionID=" . $_GET['id_init']);
+    header("Location: ./manual.php?sessionID=" . $_GET['id_join']);
   }
   else {
 
@@ -96,16 +96,25 @@
         <!-- SESSION FORM HERE, IN POP-UP DIALOG -->
         <form title="Create/join session" id="session_form" action="sessions.php" method="get">
           <fieldset>
-            <label for="session_name">Enter session ID:</label>
-            <input type="text" name="id_init" id="session_id" class="text ui-widget-content ui-corner-all">
-            <label for="create_option">For session creation only - type of comparison to use:</label>
+            <label><u>Create session</u></label>
+            <p>To create session, generate session ID <u>AND</u> select comparison option, then click on button.</p>
+            <label for="session_name">Session ID:</label>
+            <input type="text" name="id_create" id="session_id_create" class="text ui-widget-content ui-corner-all">
+            <button onclick="generateID()">Generate ID</button>
+            <br>
+            <label for="create_option">Type of comparison to use:</label>
+            <br>
             <input type="radio" name="option" value="Manual comparison">Manual comparison
             <br>
             <input type="radio" name="option" value="Timetable comparison">Timetable comparison
             <br>
             <br>
-            <p>To create session, fill in session ID <u>AND</u> comparison option and click on button.</p>
+            <br>
+            <label><u>Join session</u></label>
             <p>To join session, fill in session ID <u>ONLY</u> and click on button.</p>
+            <label for="session_name">Enter session ID:</label>
+            <input type="text" name="id_join" id="session_id_join" class="text ui-widget-content ui-corner-all">
+            <br>
             <br>
             <!-- Allow form submission with keyboard without duplicating the dialog button -->
             <input id="create_submit" name="submit" type="submit" value="Create/join session">

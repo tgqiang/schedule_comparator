@@ -12,7 +12,9 @@
 
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+    if (isset($_SESSION['create'])) {
+      $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+    }
     $mysqli->close();
     session_destroy();
     header("Location: Schedule%20Comparator.html");

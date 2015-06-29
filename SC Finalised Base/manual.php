@@ -10,9 +10,17 @@
     die("MySQL connection failed.");
   }
 
+  /* IF USER ADDS ENTRY */
+  if (isset($_GET['user_name']) && isset($_GET['input_dates'])) {
+    $_SESSION['person'] = $_GET['user_name'];
+    $_SESSION['dates'] = $_GET['input_dates'];
+  }
+
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+    if (isset($_SESSION['create'])) {
+      $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+    }
     $mysqli->close();
     session_destroy();
     header("Location: Schedule%20Comparator.html");
@@ -105,14 +113,14 @@
         <h2>Manual Entry</h2>
         <br>
 
-        <div id="dialog-form" title="Add a member">
+        <div id="dialog-form" title="Add/modify your entry">
           <!-- FORM FOR MANUAL ENTRY -->
           <form>
             <fieldset>
               <label for="name">Name</label>
-              <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+              <input type="text" name="user_name" id="name" class="text ui-widget-content ui-corner-all">
               <label for="dates">Dates available</label>
-              <input type="text" name="dates" id="dates" class="text ui-widget-content ui-corner-all" onblur="closeDatePicker()" multiple>
+              <input type="text" name="input_dates" id="dates" class="text ui-widget-content ui-corner-all" onblur="closeDatePicker()" multiple>
  
               <!-- Allow form submission with keyboard without duplicating the dialog button -->
               <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
@@ -122,9 +130,12 @@
  
         <!-- THIS TABLE UPDATES THE GROUP'S SCHEDULES -->
         <div id="users-contain" class="ui-widget">
-          <h3>Existing Users:
-            <button id="reset-table">Reset list</button>
-            <button id="compute">Done</button>
+          <h3>Options:
+            <button id="create-user">Add your entry</button>
+            <button id="reset-table">Update table</button>
+            <!--To allow option to modify own entry-->
+            <button id="edit-self">Modify own entry</button>
+            <button id="compute">Compute dates</button>
           </h3>
           <table id="users" class="ui-widget ui-widget-content">
             <thead>
@@ -137,7 +148,6 @@
             </tbody>
           </table>
         </div>
-        <button id="create-user">Add new member</button>
         <br>
         <br>
         <form action="manual.php" method="get">

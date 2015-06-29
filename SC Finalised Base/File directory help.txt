@@ -1,0 +1,108 @@
+============================================
+|  SCHEDULE COMPARATOR DIRECTORY OF FILES  |
+============================================
+
+-> [Key files that should not be touched at all]
+=================================================================
+| - MultiDatesPicker v1.6.3
+| :Datepicker interface for Schedule Comparator.
+| :To be replaced with DatePair interface.
+|
+| - background.jpg
+| :saved copy of background image
+|
+| - base.css
+| :CSS for all PHP files that includes HTML
+|
+| - bootstrap.css
+| :Bootstrap CSS for all PHP files that includes HTML
+| :Contains Bootstrap functionalities
+|
+| - jquery.js
+| :jQuery JS file for all PHP files that includes HTML
+| :Contains jQuery functionalities
+|
+| - jquery-ui.css
+| :jQuery UI CSS for all PHP files that includes HTML
+| :CSS file to complement jQuery UI
+|
+| - jquery-ui.js
+| :jQuery UI JS file for all PHP files that includes HTML
+| :Contains jQuery UI functionalities
+|
+| - jquery-ui.multidatespicker.js
+| :Datepicker JS file extended from jQuery UI
+| :Used for manual.php Datepicker interface
+|
+| - php.ini
+| :PHP configurations for Schedule Comparator
+=================================================================
+
+
+-> [Main page] (Finalised and should not be touched)
+=================================================================
+| - main.js
+| :JS file for homepage
+|
+| - Schedule Comparator.html
+| :homepage HTML
+|
+=================================================================
+ ||
+ ||
+ ||-> [Sessions] (Finalised and should not be touched)
+  ===============================================================
+  | - sessions.js
+  | :JS file for sessions.php
+  |
+  | - sessions.php
+  | :PHP file for session-creation
+  | :Contains HTML
+  |
+  | - idGenerator (BACKUP).js
+  | :Backup copy of ID generating functions codes
+  | :Recommended to remove after product is finalised
+  |
+  ===============================================================
+  ||
+  ||
+  ||-> [Comparison options]
+=================================================================
+   ==============================================================
+   | => [Manual] (Requires work here for: Edit entry & Computation with PHP)
+   |
+   | - addEntry.php
+   | :PHP file to execute entry-adding to table in database for manual.php
+   | :Does not contain HTML
+   |
+   | - manual.js
+   | :JS file for manual.php
+   |
+   | - manual.php
+   | :PHP file for manual comparison option
+   | :Contains HTML
+   |
+   | - refreshTable.php
+   | :PHP file to update table state and load back in manual.php
+   | :Does not contain HTML
+   |
+   ==============================================================
+
+   ==============================================================
+   | => [Upload] (Currently placeholder, requires much work here)
+   | - upload.js
+   | :JS file for upload.php
+   |
+   | - upload.php
+   | :PHP file for timetable URL upload option
+   | :Contains HTML
+   |
+   ==============================================================
+=================================================================
+[Others] (This is for experimental use)
+
+- test.php
+:PHP file to do PHP code experimentation
+:Recommended to remove once product is absolutely finalised
+
+=================================================================
