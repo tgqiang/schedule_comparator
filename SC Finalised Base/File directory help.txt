@@ -50,12 +50,13 @@
 =================================================================
  ||
  ||
- ||-> [Sessions] (Finalised and should not be touched)
+ ||-> [Sessions] (1 work remaining)
   ===============================================================
   | - sessions.js
   | :JS file for sessions.php
   |
-  | - sessions.php
+  | - sessions.php (need to link users up to a manual or timetable page.
+  |		    perhaps can store a table of IDs as well as compare type)
   | :PHP file for session-creation
   | :Contains HTML
   |
@@ -69,10 +70,23 @@
   ||-> [Comparison options]
 =================================================================
    ==============================================================
-   | => [Manual] (Requires work here for: Edit entry & Computation with PHP)
+   | => [Manual] (Potential issue: would table be dropped when
+   |              any one of the joining members leaves?)
    |
    | - addEntry.php
    | :PHP file to execute entry-adding to table in database for manual.php
+   | :Does not contain HTML
+   |
+   | - computeDates.php
+   | :PHP file to execute dates-fetching for common dates computation
+   | :Does not contain HTML
+   |
+   | - updateEntry.php
+   | :PHP file to execute entry update for user
+   | :Does not contain HTML
+   |
+   | - refreshTable.php
+   | :PHP file to update table state and load back in manual.php
    | :Does not contain HTML
    |
    | - manual.js
@@ -82,8 +96,8 @@
    | :PHP file for manual comparison option
    | :Contains HTML
    |
-   | - refreshTable.php
-   | :PHP file to update table state and load back in manual.php
+   | - windowClose.php
+   | :PHP file to handle exception when user exits by unintended method
    | :Does not contain HTML
    |
    ==============================================================

@@ -1,16 +1,11 @@
 // ====== manual.js ====== //
 var xmlhttp = new XMLHttpRequest();
 
-/* TEMPORARILY FOR MANUAL.HTML */
-var database = {
-    numUsers: 0,
-    date_string: ""
-  };
-
 /* READY FUNCTIONS */
 $(document).ready(function() {
-  // ACCORDION EFFECT FOR USEFUL LINKS
-	$(".accordion").accordion({collapsible: true, active: false});
+  /* ================= PAGE READY HANDLER ================= */
+	// ACCORDION EFFECT FOR NAVIGATIONS
+  $(".accordion").accordion({collapsible: true, active: false});
 	$(".titles").hover(
 		function(){
 			$(this).addClass('highlight');
@@ -19,23 +14,42 @@ $(document).ready(function() {
 			$(this).removeClass('highlight');
 		}
 	);
-  $("#edit-self").hide();
+
+  // TEST IF ENTRY-ADDED HANDLER
+  if (window.sessionStorage.getItem("added") === "true") {
+    $("#create-user").hide();
+    $("#edit-self").show();
+  }
+  else {
+    $("#edit-self").hide();
+  }
+  /* ================= !PAGE READY HANDLER ================= */
+
   
+  /* =============== 'X' BUTTON EXIT HANDLER =============== */
+  // IF USER CLICKS 'X' BUTTON OF THE BROWSER
+  window.addEventListener("beforeunload", function(event) {
+    event.returnValue = "It is STRONGLY recommended that you leave this page by exiting the session via the button present in this page instead."; 
+  });
+
+  // IF USER CONFIRMS LEAVING PAGE VIA 'X' BUTTON OF THE BROWSER
+  window.onunload = function() {
+    xmlhttp.open('GET', 'windowClose.php', true);
+    xmlhttp.send();
+  };
+  /* =============== !'X' BUTTON EXIT HANDLER =============== */
+
+
 	/* ========== MANUAL.HTML USER FORM SCRIPTING ========== */
   var dialog, form,
  
   name = $("#name"),
-
-  /*EDITED*/
   dates = $('#dates').multiDatesPicker({
-	dateFormat: "yy-mm-dd",
-	minDate: 0,
+	 dateFormat: "yy-mm-dd",
+	 minDate: 0,
   });
-  /*EDITED*/
-  
-  /*allFields = $([]).add(name).add(dates);*/
 
-  /*This will check if name is filled or not*/
+  /* This will check if name is filled or not */
   function name_Fill_Validate(inputName) {
     if (inputName.val().length === 0) {
       window.alert("Name not filled.");
@@ -44,7 +58,7 @@ $(document).ready(function() {
       return validate(inputName.val());
     }
   }
-  /*This will check if date is filled or not*/
+  /* This will check if date is filled or not */
   function isDateFilled(inputDate) {
     if (inputDate.val().length === 0) {
       var proceed = window.confirm("Date field is empty. Proceed?");
@@ -60,77 +74,98 @@ $(document).ready(function() {
  	  			  		isDateFilled(dates);
     
     if (valid) {
-        /*
-        xmlhttp.open('get', 'addEntry.php', true);
-        xmlhttp.send();
-        console.log(xmlhttp.responseText);
-        */
-        $.get('addEntry.php', {person: name.val(), dates: dates.val()}, function() { window.alert("Successfully added.") });
+        $.get('addEntry.php', {person: name.val(), dates: dates.val(), added: true}, function() { window.alert("Successfully added.") });
+        window.sessionStorage.setItem("added", "true");
         $("#create-user").hide();
         $("#edit-self").show();
     }
-    
-    database.numUsers += 1;
     dialog.dialog("close");     
   }
- 
+
+  function updateUser() {
+   /* THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED */
+   var valid = name_Fill_Validate(name) &&
+                isDateFilled(dates);
+    
+    if (valid) {
+        $.get('updateEntry.php', {person: name.val(), dates: dates.val()}, function() { window.alert("Successfully updated.") });
+        //window.sessionStorage.setItem("added", "true");
+    }
+    dialog.dialog("close");     
+  }
+  
+  function submitUser() {
+    if (window.sessionStorage.getItem("added") === "true") {
+      event.preventDefault();
+      updateUser();
+    }
+    else {
+      event.preventDefault();
+      addUser();
+    }
+  }
+
+  // FORM CONFIGURATIONS
   dialog = $("#dialog-form").dialog({
     autoOpen: false,
     height: 300,
     width: 350,
     modal: true,
     buttons: {
-      "Add your entry": addUser,
+      "Add/modify your entry": submitUser,
       Cancel: function() {
         dialog.dialog("close");
       }
     },
     close: function() {
-      $("#dates").multiDatesPicker("resetDates", "picked");
-      form[0].reset();
+      //$("#dates").multiDatesPicker("resetDates", "picked");
+      //form[0].reset();
+      dialog.dialog("close");
     }
   });
- 
+  
+  // FORM SUBMIT EVENT
   form = dialog.find("form").on("submit", function(event) {
     event.preventDefault();
-    addUser();
   });
   
-  // open dialog for adding self entry
+  // HANDLER WHEN USER INTENDS TO APPEND HIS/HER OWN ENTRY
   $("#create-user").button().on("click", function() {
     dialog.dialog("open");
   });
 
-  // empties the table and resets 'database' variable (TO BE REMOVED)
+  // REFRESHES TABLE THAT IS DISPLAYED
   $("#reset-table").button().on("click", function() {
     $("tr#entry, td#entry").remove();
-    database.numUsers = 0;
-    database.date_string = "";
-    //*
     $("#users tbody").load('refreshTable.php', function(result) {
-      //$("#users tbody").append(result);
       alert("Table refreshed.");
     });
-    //*/
   });
 
-  // computes the common dates (PLACEHOLDER)
+  // HANDLER WHEN USER WANTS TO MODIFY SELF SCHEDULE ENTRY (NOT DONE)
+  $("#edit-self").button().on("click", function() {
+    $("#dialog-form").dialog("open");
+    //alert("Edit self entry.");
+  });
+
+  // HANDLER FOR COMMON DATE COMPUTATION
   $("#compute").button().on("click", function() {
-    database.date_string += ", ";
-    var test = (database.date_string.split(", ").sort(datesort));
-    compute_Dates(test, database.numUsers);
+    $(document).load('computeDates.php', function(result) {
+      var tablesize = parseInt(result.substring(result.length - 1));
+      var arrayOfDates = result.substring(0, result.length - 1).split(", ").sort(datesort);
+      compute_Dates(arrayOfDates, tablesize);
+    });
   });
-
   /* ========== !MANUAL.HTML USER FORM SCRIPTING ========== */
 })
 
-/* ========== VALIDATION AND COMPUTATION FUNCTIONS FOR MANUAL.HTML USER FORM ========== */
-// the function to compute the dates that every single person in the group is free
+/* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
+// COMPUTATION FUNCTION
 function compute_Dates(dateArray, totalUsers) {
   var count = 1;
   var result = "";
 
-  for (var i = 0; i < dateArray.length - 1; i = i + 1) {
+  for (var i = 0; i < dateArray.length; i = i + 1) {
     if (dateArray[i] === dateArray[i + 1]) {
       count = count + 1;
     }
@@ -150,14 +185,14 @@ function compute_Dates(dateArray, totalUsers) {
    }
 }
 
-// the Java equivalent of the Comparator object
+// DATE COMPARATOR OBJECT (IN JAVASCRIPT)
 function datesort(date1, date2) {
   var a = new Date(date1);
   var b = new Date(date2);
   return a - b;
 }
 
-// the function to validate input data for manual form
+// INPUT VALIDATION
 function validate(inputName) {
   var keywords = ["select",
                   "update",
@@ -194,8 +229,8 @@ function validate(inputName) {
   }
 }
 
+// DATEPICKER CLOSING FUNCTION
 function closeDatePicker() {
   $('#dates').multiDatesPicker('hide');
 }
-
-/* ========== !VALIDATION AND COMPUTATION FUNCTIONS FOR MANUAL.HTML USER FORM ========== */
+/* ========== !PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */

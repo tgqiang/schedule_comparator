@@ -18,43 +18,26 @@
 
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    if (isset($_SESSION['create'])) {
+    if (isset($_SESSION['create']) /*&& $_SESSION['create'] === TRUE*/) {
       $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+      $mysqli->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
     }
     $mysqli->close();
+    session_unset();
     session_destroy();
     header("Location: Schedule%20Comparator.html");
   }
 
   /* CREATE */
   function createSession($db) {
-    // sql query to create table
+    /* sql query to create table */
     $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
-    /*
-    if ($result === TRUE) {
-        $msg = "Table " . $_SESSION['sessionID'] . " created successfully.";
-        print $msg;
-    } else {
-        echo $db->errno;
-        $msg = "Error creating table: " . $db->error;
-        print $msg;
-    }
-    */
+    echo "User is CREATING session. " . $_SESSION['create'];
   }
 
-  /* JOIN */
+  /* JOIN (to work on showing table on load) */
   function joinSession($db) {
-    // sql query to create table
-    $result = $db->query("SELECT * FROM " . $_SESSION['sessionID']);
-    /*
-    if ($result !== FALSE) {
-        $msg = "Table " . $_SESSION['sessionID'] . " retrieved successfully.";
-        print $msg;
-    } else {
-        $msg = "Error retrieving table: " . $db->error;
-        print $msg;
-    }
-    */
+    echo "User is JOINING session. " . $_SESSION['join'];
   }
 
   if (isset($_SESSION['create'])) {

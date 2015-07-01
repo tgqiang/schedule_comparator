@@ -6,7 +6,8 @@ $(document).ready(function() {
 	$(".accordion").accordion({collapsible: true, active: false});
 
   /* ========== SESSION FORM SCRIPTING ========== */
-  $("#session_form").dialog({
+  /* CREATE SESSION FORM */
+  $("#session_create_form").dialog({
     width: 400,
     height: 450,
     autoOpen: false,
@@ -20,22 +21,62 @@ $(document).ready(function() {
     },
     buttons: {
       Cancel: function() {
-                $("#session_form").dialog("close");
-                document.getElementById("session_form").reset();
+                $("#session_create_form").dialog("close");
+                document.getElementById("session_create_form").reset();
               }
     }
   });
 
-  $("#session_init").click(function() {
-    $("#session_form").dialog("open");
+  /* OPENS DIALOG TO CREATE SESSION */
+  $("#create_session_init").click(function() {
+    $("#session_create_form").dialog("open");
   });
 
-  $("#create_submit, #join_submit").click(function() {
-    var validSessionID = session_fields_validate($("#session_id").val());
-    /* if session ID is valid */
-    if (validSessionID) {
-      $("#session_form").dialog("close");
-      //document.getElementById("session_form").reset();
+  /* CREATE SESSION SUBMISSION */
+  $("#create_submit").click(function() {
+    var validCreateSessionID = session_fields_validate($("#session_id_create").val());
+    /* if session ID for creation is valid */
+    if (validCreateSessionID) {
+      $("#session_create_form").dialog("close");
+    }
+    /* otherwise, if session ID is invalid */
+    else {
+      event.preventDefault();
+    }
+  });
+
+  /* JOIN SESSION FORM */
+  $("#session_join_form").dialog({
+    width: 400,
+    height: 450,
+    autoOpen: false,
+    show: {
+      effect: "blind",
+      duration: 500
+    },
+    hide: {
+      effect: "blind",
+      duration: 500
+    },
+    buttons: {
+      Cancel: function() {
+                $("#session_join_form").dialog("close");
+                document.getElementById("session_join_form").reset();
+              }
+    }
+  });
+
+  /* OPENS DIALOG TO JOIN SESSION */
+  $("#join_session_init").click(function() {
+    $("#session_join_form").dialog("open");
+  });  
+
+  /* JOIN SESSION SUBMISSION */
+  $("#join_submit").click(function() {
+    var validJoinSessionID = session_fields_validate($("#session_id_join").val());
+    /* if session ID for creation is valid */
+    if (validJoinSessionID) {
+      $("#session_join_form").dialog("close");
     }
     /* otherwise, if session ID is invalid */
     else {
@@ -120,15 +161,12 @@ function generated_ID_validate(str) {
 // 48 + n, n = [0,9]^[17,42]^[49,74]
 function randomChar() {
     var n;
-    var option = Math.round(Math.random() * 2);
+    var option = Math.round(Math.random() * 1);
     // generate random number
     if (option === 0) {
         n = Math.round(Math.random() * 9);
     }
     // generate random lowercase letter
-    else if (option === 1) {
-        n = Math.round(17 + Math.random() * 25);
-    }
     else {
         n = Math.round(49 + Math.random() * 25);
     }
