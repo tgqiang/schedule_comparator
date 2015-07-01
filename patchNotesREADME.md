@@ -1,6 +1,19 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 01/07/2015
+Changes/Notes:
+* Session and Manual implementations are complete
+* Current direction would be to work on timetable URL upload implementations
+* When 2nd point is complete, proceed to migrate to Datepair interface
+ 
+Required commits:
+* (_Potential issue, no commit needed if this issue is confirmed as absent_) Need to verify whether table is dropped when members who joined session leaves it (**serious issue, affects base functionality of manual comparison method**)
+* upload.php work depends on whether NUSMods APIcan be used to retrieve dates and times in a user's timetable.
+* MultiDatesPicker interface to be changed to DatePair interface to also account for time selections.
+
+----
+
 # 29/06/2015
 Changes/Notes:
 * Base version of Schedule Comparator has been totally revamped. All changes should be committed towards the new version.
