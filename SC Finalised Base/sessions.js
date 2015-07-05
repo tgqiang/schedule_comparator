@@ -1,4 +1,17 @@
 /* ====== sessions.js ====== */
+var keywords =   ["select",
+                  "update",
+                  "delete",
+                  "insert",
+                  "create",
+                  "alter",
+                  "drop",
+                  "into",
+                  "table",
+                  "database",
+                  "index",
+                  "or ",
+                  "and "];
 
 /* READY FUNCTIONS */
 $(document).ready(function() {
@@ -87,6 +100,7 @@ $(document).ready(function() {
 
 /* the function to validate input data for session forms */
 function session_fields_validate(inputName) {
+  /*
   var keywords = ["select",
                   "update",
                   "delete",
@@ -100,6 +114,7 @@ function session_fields_validate(inputName) {
                   "index",
                   "or ",
                   "and "];
+                  */
 
   var sample = inputName.toLowerCase();
 
@@ -126,6 +141,7 @@ function session_fields_validate(inputName) {
 
 /* ========== RANDOM ID GENERATING FUNCTIONS FOR SESSION ID ========== */
 function generated_ID_validate(str) {
+  /*
   var keywords = ["select",
                   "update",
                   "delete",
@@ -139,6 +155,7 @@ function generated_ID_validate(str) {
                   "index",
                   "or ",
                   "and "];
+                  */
 
   var sample = str.toLowerCase();
 
@@ -149,7 +166,7 @@ function generated_ID_validate(str) {
     return false;
   }
   else {
-    for (var i = 0; i < keywords.length; i = i + 1) {
+    for (var i = 0; i < keywords.length; i++) {
       if (sample.includes(keywords[i])) {
         return false;
       }
@@ -158,7 +175,7 @@ function generated_ID_validate(str) {
   }
 }
 
-// 48 + n, n = [0,9]^[17,42]^[49,74]
+// 48 + n, n = [0,9] U [49,74]
 function randomChar() {
     var n;
     var option = Math.round(Math.random() * 1);

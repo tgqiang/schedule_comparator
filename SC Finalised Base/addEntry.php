@@ -1,4 +1,5 @@
 <?php
+/* ADDING USER ENTRY VIA QUERY TO DATABASE TO INSERT ROW OF VALUES (NAME & DATES) */
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 

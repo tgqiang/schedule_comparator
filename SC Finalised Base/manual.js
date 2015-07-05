@@ -1,4 +1,19 @@
 // ====== manual.js ====== //
+var keywords =   ["select",
+                  "update",
+                  "delete",
+                  "insert",
+                  "create",
+                  "alter",
+                  "drop",
+                  "into",
+                  "table",
+                  "database",
+                  "index",
+                  "or ",
+                  "and "];
+
+/* VARIABLE FOR MANAGING AJAX REQUESTS */
 var xmlhttp = new XMLHttpRequest();
 
 /* READY FUNCTIONS */
@@ -27,7 +42,7 @@ $(document).ready(function() {
 
   
   /* =============== 'X' BUTTON EXIT HANDLER =============== */
-  // IF USER CLICKS 'X' BUTTON OF THE BROWSER
+  // IF USER CLICKS 'X' BUTTON OF THE BROWSER (EXCEPTION HANDLING OF IMPROPER EXIT)
   window.addEventListener("beforeunload", function(event) {
     event.returnValue = "It is STRONGLY recommended that you leave this page by exiting the session via the button present in this page instead."; 
   });
@@ -89,7 +104,6 @@ $(document).ready(function() {
     
     if (valid) {
         $.get('updateEntry.php', {person: name.val(), dates: dates.val()}, function() { window.alert("Successfully updated.") });
-        //window.sessionStorage.setItem("added", "true");
     }
     dialog.dialog("close");     
   }
@@ -118,8 +132,6 @@ $(document).ready(function() {
       }
     },
     close: function() {
-      //$("#dates").multiDatesPicker("resetDates", "picked");
-      //form[0].reset();
       dialog.dialog("close");
     }
   });
@@ -129,8 +141,8 @@ $(document).ready(function() {
     event.preventDefault();
   });
   
-  // HANDLER WHEN USER INTENDS TO APPEND HIS/HER OWN ENTRY
-  $("#create-user").button().on("click", function() {
+  // HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY
+  $("#create-user, #edit-self").button().on("click", function() {
     dialog.dialog("open");
   });
 
@@ -142,12 +154,13 @@ $(document).ready(function() {
     });
   });
 
-  // HANDLER WHEN USER WANTS TO MODIFY SELF SCHEDULE ENTRY (NOT DONE)
+  /*
+  // HANDLER WHEN USER WANTS TO MODIFY SELF SCHEDULE ENTRY
   $("#edit-self").button().on("click", function() {
     $("#dialog-form").dialog("open");
-    //alert("Edit self entry.");
   });
-
+  */
+  
   // HANDLER FOR COMMON DATE COMPUTATION
   $("#compute").button().on("click", function() {
     $(document).load('computeDates.php', function(result) {
@@ -194,6 +207,7 @@ function datesort(date1, date2) {
 
 // INPUT VALIDATION
 function validate(inputName) {
+  /*
   var keywords = ["select",
                   "update",
                   "delete",
@@ -207,6 +221,7 @@ function validate(inputName) {
                   "index",
                   "or ",
                   "and "];
+                  */
 
   var sample = inputName.toLowerCase();
 

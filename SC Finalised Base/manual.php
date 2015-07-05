@@ -18,7 +18,7 @@
 
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    if (isset($_SESSION['create']) /*&& $_SESSION['create'] === TRUE*/) {
+    if (isset($_SESSION['create'])) {
       $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
       $mysqli->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
     }
@@ -32,12 +32,11 @@
   function createSession($db) {
     /* sql query to create table */
     $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
-    echo "User is CREATING session. " . $_SESSION['create'];
   }
 
-  /* JOIN (to work on showing table on load) */
+  /* JOIN (EFFECTIVELY DOES NOTHING) */
   function joinSession($db) {
-    echo "User is JOINING session. " . $_SESSION['join'];
+
   }
 
   if (isset($_SESSION['create'])) {
@@ -115,9 +114,9 @@
         <div id="users-contain" class="ui-widget">
           <h3>Options:
             <button id="create-user">Add your entry</button>
-            <button id="reset-table">Update table</button>
             <!--To allow option to modify own entry-->
-            <button id="edit-self">Modify own entry</button>
+            <button id="edit-self">Modify your entry</button>
+            <button id="reset-table">Update table</button>
             <button id="compute">Compute dates</button>
           </h3>
           <table id="users" class="ui-widget ui-widget-content">
@@ -128,6 +127,9 @@
               </tr>
             </thead>
             <tbody>
+              <?php
+                include_once 'refreshTable.php';
+              ?>
             </tbody>
           </table>
         </div>

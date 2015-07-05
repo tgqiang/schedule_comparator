@@ -10,6 +10,7 @@
     die("MySQL connection failed.");
   }
   
+  /* USER REDIRECTION FOR SESSION CREATION */
   if (isset($_GET['id_create']) && isset($_GET['option']) && isset($_GET['create_submit'])) {
     $_SESSION['sessionID'] = $_GET['id_create'];
     $usedID = $mysqli->query("DESCRIBE " . $_SESSION['sessionID']);
@@ -35,6 +36,7 @@
     }
   }
   
+  /* USER REDIRECTION FOR SESSION JOINING */
   else if (isset($_GET['id_join']) && isset($_GET['join_submit'])) {
     $_SESSION['sessionID'] = $_GET['id_join'];
     $_SESSION['join'] = true;
@@ -51,6 +53,7 @@
     }
   }
 
+  /* INVALID OPTIONS: DO NOTHING */
   else {
 
   }

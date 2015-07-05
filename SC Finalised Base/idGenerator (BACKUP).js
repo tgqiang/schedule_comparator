@@ -1,3 +1,5 @@
+/* BACKUP COPY OF THE ID GENERATING FUNCTION */
+
 function generated_ID_validate(str) {
   var keywords = ["select",
                   "update",

@@ -1,4 +1,5 @@
 <?php
+/* RETURNS HTML TABLE ELEMENT */
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 

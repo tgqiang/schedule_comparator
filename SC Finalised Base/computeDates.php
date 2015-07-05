@@ -1,4 +1,5 @@
 <?php
+/* RETURNS STRING OF ALL DATES IN THE DATABASE TABLE */
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 

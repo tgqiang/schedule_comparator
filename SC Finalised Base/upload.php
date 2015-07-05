@@ -30,8 +30,7 @@
 
   /* JOIN (to work on showing table on load) */
   function joinSession($db) {
-    /* sql query to load existing table */
-    //$result = $db->query("SELECT * FROM " . $_SESSION['sessionID']);
+
   }
 
   if (isset($_SESSION['create'])) {
@@ -88,6 +87,45 @@
         <!-- PLACEHOLDER FOR UPLOAD.HTML FOR NOW -->
         <h2>Timetable Upload</h2>
         <p>Placeholder for NUSMods Timetable URL upload option!</p>
+        <div id="dialog-form" title="Add/modify your entry">
+          <!-- FORM FOR MANUAL ENTRY -->
+          <form>
+            <fieldset>
+              <label for="name">Name</label>
+              <input type="text" name="user_name" id="name" class="text ui-widget-content ui-corner-all">
+              <label for="address">Paste timetable URL here:</label>
+              <br>
+              <input type="text" name="input_address" id="address" class="text ui-widget-content ui-corner-all">
+ 
+              <!-- Allow form submission with keyboard without duplicating the dialog button -->
+              <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+          </form>
+        </div>
+        <br>
+        <!-- THIS TABLE UPDATES WHO IN THE GROUP HAS UPLOADED URL -->
+        <div id="users-contain" class="ui-widget">
+          <h3>Options:
+            <button id="create-user">Add your entry</button>
+            <!--To allow option to modify own entry-->
+            <button id="edit-self">Modify your entry</button>
+            <button id="reset-table">Update table</button>
+            <!--<button id="compute">Compute dates</button>-->
+          </h3>
+          <table id="users" class="ui-widget ui-widget-content">
+            <thead>
+              <tr class="ui-widget-header ">
+                <th id="name-heading">Name</th>
+                <th id="address-heading">Timetable URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                include_once 'refreshTable.php';
+              ?>
+            </tbody>
+          </table>
+        </div>
         <br>
         <br>
         <form action="upload.php" method="get">
