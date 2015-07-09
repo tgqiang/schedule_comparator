@@ -1,4 +1,11 @@
 <?php
+/*
+ * // TEST.PHP //
+ * A PLACEHOLDER FOR DEVELOPER TO TEST PHP CODE OUT WITHOUT AFFECTING THE
+ * WHOLE PROGRAM. RECOMMENDED TO REMOVE ONCE PRODUCT IS DEEMED AS WORKING
+ * PERFECTLY FINE.
+ */
+
     function sess_open($sess_path, $sess_name) {
         print "Session opened.\n";
         print "Sess_path: $sess_path\n";

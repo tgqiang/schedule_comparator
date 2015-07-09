@@ -24,6 +24,7 @@
 		}
 		function removeIndex(index, type) {
 			if(!type) type = 'picked';
+			this.focus();
 			return this.multiDatesPicker.dates[type].splice(index, 1).pop();
 		}
 		function addDate(date, type, no_sort) {
@@ -490,6 +491,7 @@
 		} else {
 			mdp.changed = false;
 			$.datepicker._refreshDatepicker(target);
+			this.blur();
 			return;
 		}
 	};

@@ -1,0 +1,184 @@
+<!--
+  * HELP PAGE OF SCHEDULE COMPARATOR
+-->
+<!DOCTYPE HTML>
+<html>
+  <head>
+  	<!-- ALL THE STYLES AND SCRIPTS NEEDED ARE HERE -->
+    <link type="text/css" rel="stylesheet" href="bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="base.css">
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery-ui.js"></script>
+    <script type="text/javascript" src="help.js"></script>
+    <title>Schedule Comparator</title>
+  </head>
+
+  <body>
+ 	  <div class="nav">
+ 	    <div class="container">
+	  	  <ul class="pull-left">
+	  	  	<!-- BASE NAVIGATIONS -->
+	  	  	<li><a href="ScheduleComparator.html">Home</a></li>
+	  	  </ul>
+
+	  	  <div class="pull-right">
+	  	  	<h3>Useful links</h3>
+	  	  	<!-- USEFUL LINKS HERE WITH ACCORDION EFFECT -->
+	  	  	<div class="accordion">
+	  	    	<h3>NUS</h3>
+	  	    	<ul>
+	  	    		<li><a href="http://www.nusmods.com/" target="_blank">NUSMods</a></li>
+			    		<li><a href="http://www.comp.nus.edu.sg/" target="_blank">NUS SoC</a></li>
+			    		<li><a href="http://www.cors.nus.edu.sg/" target="_blank">NUS CORS</a></li>
+			    	</ul>
+
+	  	    	<h3>Tools</h3>
+	  	  		<ul>
+	  	  			<li><a href="https://drive.google.com/" target="_blank">Google Drive</a></li>
+	  	  			<li><a href="https://www.google.com/calendar/" target="_blank">Google Calendar</a></li>
+	  	  		</ul>
+	  	  	</div>	
+	  	  </div>
+	    </div>
+	  </div>
+
+	  <div class="jumbotron">
+	    <div class="container">
+	      <!-- INTRODUCTION JUMBOTRON -->
+	      <h1>SCHEDULE COMPARATOR: How to use</h1>
+	      <p>The guide to using this Schedule Comparator</p>
+		  	<p><u>How do I use this comparator?</u></p>
+	      <br>
+	      <div class="row">
+	      	<div class="col-md-4">
+	      		<h4>Step 1: Create/Join session</h4>
+	      		<img src="Step1Sessions.png" height="120" width="150">
+	      		<br>
+	      		<p>Go to "Sessions" in above menu to create a session for your group of friends or join an existing session created by one of your friends. This would then allow you to start using the Schedule Comparator. Click on the buttons to find out more.</p>
+	      		<p id="create">Create</p>
+	      		<p id="join">Join</p>
+	      	</div>
+
+	      	<div class="col-md-4">
+			      <h4>Step 2: Start using the comparator</h4>
+	  		    <p>There are two options offered in this comparator. Click on the buttons to find out more.</p>
+	      		<p id="manual">Manual Entry Comparison</p>
+	      		<p id="upload">NUSMods Timetable Entry Comparison</p>
+	      	</div>
+
+	      	<div class="col-md-4">
+			      <h4>Step 3: Exiting</h4>
+	  		    <img src="Step3UploadForm7.png" height="120" width="150">
+		    		<br>
+		    		<p>To stop using the comparator, simply click on the button (see circled marking), which will reveal a pop-up. Click on the 'Leave this Page' button in the pop-up to safely exit the session.</p>
+	      	</div>
+	      </div>
+
+	      <div id="show_create">
+	      	<h5>Creating the session</h5>
+	        <img src="Step2Create.png" height="120" width="150">
+	        <br>
+	        <p>In the "Sessions" page, click on the option for creating the session (see the arrow). A form will appear.</p>
+	        <br>
+	        <br>
+	        <img src="Step2CreateForm.png" height="120" width="150">
+	        <br>
+	        <p>1. Click on the 'Generate ID' button to generate a session ID.</p>
+	        <p>2. Select the comparison method desired.</p>
+	        <p>3. Click on the 'Create session' button to create a session.</p>
+	        <br>
+	      </div>
+
+	      <div id="show_join">
+	        <h5>Joining the session</h5>
+	        <p>If you are not the one who created the session, you should instead join an existing session created by one of your friends, who should have informed you about the session ID. Use that session ID to join the correct session and your group members can start filling in your schedules.</p>
+	        <br>
+	        <img src="Step2Join.png" height="120" width="150">
+	        <br>
+	        <p>In the "Sessions" page, click on the option for joining the session (see the arrow). A form will appear.</p>
+	        <br>
+	        <br>
+	        <img src="Step2JoinForm.png" height="120" width="150">
+	        <br>
+	        <p>1. Fill in the session ID in the input field.</p>
+	        <p>2. Click on the 'Join session' button to join the session.</p>
+	        <br>
+	      </div>
+
+	      <div id="show_manual">
+	      	<h5>Manual Entry Comparison</h5>
+		      <img src="Step3Manual.png" height="120" width="150">
+		      <br>
+		      <p>After successfully creating/joining a manual-option session, this is the page where you will land. To start entering your entry, click on the 'Add your entry' button. A form will appear.</p>
+		      <br>
+		      <br>
+		      <img src="Step3ManualForm1.png" height="120" width="150">
+		      <br>
+		      <p>Fill in your name as well as use the datepicker interface to select dates that you are available. To select a date, click on it once. To unselect that same date, click on it again.</p>
+		      <br>
+		      <br>
+		      <img src="Step3ManualForm2.png" height="120" width="150">
+		      <br>
+		      <p>When you are done, just click on the 'Add/modify your entry' button to submit and you should get an alert as show below.</p>
+		      <br>
+		      <img src="Step3ManualForm3.png" height="120" width="150">
+		      <br>
+		      <br>
+		      <img src="Step3ManualForm4.png" height="120" width="150">
+		      <br>
+		      <p>If you have already submitted your entry and wish to make changes, just click on the 'Modify your entry' button. A form will appear (as shown below) and you can make your desired changes and submit your updated entry. If successful, you should get an alert (also shown below).</p>
+		      <br>
+		      <img src="Step3ManualForm5.png" height="120" width="150">
+		      <br>
+		      <img src="Step3ManualForm6.png" height="120" width="150">
+		      <br>
+		      <br>
+		      <img src="Step3ManualForm7.png" height="120" width="150">
+		      <br>
+		      <p>To see who has entered their schedules, click on the 'Update table' button and you will get an alert, in which a table will display all entries that were submitted in the session.</p>
+		      <br>
+		      <br>
+		      <img src="Step3ManualForm8.png" height="120" width="150">
+		      <br>
+		      <p>After everyone is done, you can click on the 'Compute dates' button to find out which date everyone is available for a meet-up/gathering, which will be shown on an alert (see above).</p>
+		      <br>
+		    </div>
+
+		    <div id="show_upload">
+		      <h5>NUSMods' Timetable Comparison</h5>
+		      <img src="Step3Upload.png" height="120" width="150">
+		      <br>
+		      <p>After successfully creating/joining a timetable-option session, this is the page where you will land. To start entering your entry, click on the 'Add your entry' button. A form will appear.</p>
+		      <br>
+		      <br>
+		      <img src="Step3UploadForm1.png" height="120" width="150">
+		      <br>
+		      <p>Fill in your name as well as your NUSMods timetable URL (or hyperlink). When you are done, just click on the 'Add/modify your entry' button to submit and you should get an alert as show below.</p>
+		      <br>
+		      <img src="Step3UploadForm2.png" height="120" width="150">
+		      <br>
+		      <br>
+		      <img src="Step3UploadForm3.png" height="120" width="150">
+		      <br>
+		      <p>If you have already submitted your entry and wish to make changes, just click on the 'Modify your entry' button. A form will appear (as shown below) and you can make your desired changes and submit your updated entry by clicking on the 'Add/Modify your entry' button. If successful, you should get an alert (also shown below).</p>
+		      <br>
+		      <img src="Step3UploadForm4.png" height="120" width="150">
+		      <br>
+		      <img src="Step3ManualForm6.png" height="120" width="150">
+		      <br>
+		      <br>
+		      <img src="Step3UploadForm5.png" height="120" width="150">
+		      <br>
+		      <p>To see who has entered their schedules, click on the 'Update table' button and you will get an alert, in which a table will display all entries that were submitted in the session.</p>
+		      <br>
+		      <br>
+		      <img src="Step3UploadForm6.png" height="120" width="150">
+		      <br>
+		      <p>After everyone is done, you can click on the 'Compute dates' button to find out which date and time slots everyone is available for a meet-up/gathering, which will be shown on an alert (see above).</p>
+		      <br>
+		    </div>
+	  	</div>
+	  </div>
+	</body>
+</html>

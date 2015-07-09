@@ -1,15 +1,15 @@
 <?php
 /* 
- * // REFRESHTABLE.PHP FOR MANUAL.PHP //
+ * // COMPUTEDATESURL.PHP FOR UPLOAD.PHP //
  * THIS PHP PROGRAM SENDS A QUERY TO SCHEDULECOMPARATOR DATABASE TO RETRIEVE ALL
- * USER ENTRIES IN HTML TABLE FORM AND RETURNS THIS RESULT TO DISPLAY IN THE
- * MANUAL.PHP PAGE.
+ * USER ENTRIES FOR NAME AND FULL URLS IN THE FORM OF HTML TABLE AND RETURNS THIS
+ * RESULT TO DISPLAY IN UPLOAD.PHP PAGE.
  */
 
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 
-$table = $db->query("SELECT * FROM " . $_SESSION['sessionID'] . " WHERE 1;");
+$table = $db->query("SELECT person, url FROM " . $_SESSION['sessionID'] . " WHERE 1;");
 
 $result = '';
 

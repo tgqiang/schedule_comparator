@@ -1,4 +1,11 @@
-/* ====== sessions.js ====== */
+/* 
+ * // SESSIONS.JS FOR SESSIONS.PHP //
+ * CONTAINS ALL THE SCRIPTING FOR SESSIONS.PHP. ATTN: FURTHER TESTING IS REQUIRED
+ * TO VERIFY INTEGRITY OF APPLICATION FUNCTIONALITY.
+ */
+
+/* SENSITIVE SQL KEYWORDS ARE DEFINED HERE
+(TO AVOID DUPLICATE DEFINITION FOR VALIDATION FUNCTIONS) */
 var keywords =   ["select",
                   "update",
                   "delete",
@@ -16,10 +23,13 @@ var keywords =   ["select",
 /* READY FUNCTIONS */
 $(document).ready(function() {
   /* ACCORDION EFFECT FOR USEFUL LINKS */
-	$(".accordion").accordion({collapsible: true, active: false});
+	$(".accordion").accordion({
+    collapsible: true,
+    active: false
+  });
 
   /* ========== SESSION FORM SCRIPTING ========== */
-  /* CREATE SESSION FORM */
+  /* CREATE SESSION FORM CONFIGURATIONS */
   $("#session_create_form").dialog({
     width: 400,
     height: 450,
@@ -48,17 +58,24 @@ $(document).ready(function() {
   /* CREATE SESSION SUBMISSION */
   $("#create_submit").click(function() {
     var validCreateSessionID = session_fields_validate($("#session_id_create").val());
-    /* if session ID for creation is valid */
-    if (validCreateSessionID) {
+    var method_selected = (document.getElementById('manual_option').checked) ||
+                          (document.getElementById('url_option').checked);
+    /* IF SESSION ID FOR CREATION IS VALID */
+    if (validCreateSessionID && method_selected) {
       $("#session_create_form").dialog("close");
     }
-    /* otherwise, if session ID is invalid */
+    /* IF COMPARISON OPTION NOT SELECTED (ATTN: JUST IMPLEMENTED, REQUIRE TESTING)*/
+    else if (validCreateSessionID && !method_selected) {
+      event.preventDefault();
+      window.alert("Comparison option is not selected, please choose one.");
+    }
+    /* OTHERWISE, IF SESSION ID IS INVALID */
     else {
       event.preventDefault();
     }
   });
 
-  /* JOIN SESSION FORM */
+  /* JOIN SESSION FORM CONFIGURATIONS */
   $("#session_join_form").dialog({
     width: 400,
     height: 450,
@@ -87,35 +104,19 @@ $(document).ready(function() {
   /* JOIN SESSION SUBMISSION */
   $("#join_submit").click(function() {
     var validJoinSessionID = session_fields_validate($("#session_id_join").val());
-    /* if session ID for creation is valid */
+    /* IF SESSION ID FOR CREATION IS VALID */
     if (validJoinSessionID) {
       $("#session_join_form").dialog("close");
     }
-    /* otherwise, if session ID is invalid */
+    /* OTHERWISE, IF SESSION ID IS INVALID */
     else {
       event.preventDefault();
     }
   });
 })
 
-/* the function to validate input data for session forms */
+/* THE FUNCTION TO VALIDATE INPUT DATA FOR SESSION FORMS */
 function session_fields_validate(inputName) {
-  /*
-  var keywords = ["select",
-                  "update",
-                  "delete",
-                  "insert",
-                  "create",
-                  "alter",
-                  "drop",
-                  "into",
-                  "table",
-                  "database",
-                  "index",
-                  "or ",
-                  "and "];
-                  */
-
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
@@ -141,22 +142,6 @@ function session_fields_validate(inputName) {
 
 /* ========== RANDOM ID GENERATING FUNCTIONS FOR SESSION ID ========== */
 function generated_ID_validate(str) {
-  /*
-  var keywords = ["select",
-                  "update",
-                  "delete",
-                  "insert",
-                  "create",
-                  "alter",
-                  "drop",
-                  "into",
-                  "table",
-                  "database",
-                  "index",
-                  "or ",
-                  "and "];
-                  */
-
   var sample = str.toLowerCase();
 
   if (sample.length === 0) {

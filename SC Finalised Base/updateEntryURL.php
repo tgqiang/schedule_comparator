@@ -1,9 +1,14 @@
 <?php
+/*
+ * // UPDATEENTRYURL.PHP FOR UPLOAD.PHP //
+ * THIS PHP PROGRAM SENDS A QUERY TO SCHEDULECOMPARATOR DATABASE TO UPDATE A USER'S
+ * OWN ROW ENTRY (UPDATES URL AND INDEXES FOR A USER).
+ */
 /* ALLOWS USER TO MODIFY OWN ENTRY VIA QUERY TO UPDATE ENTRY IN DATABASE TABLE */
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 
-$result = $db->query("UPDATE " . $_SESSION['sessionID'] . " SET url='" . $_GET['address'] . "' WHERE person='" . $_GET['person'] . "';");
+$result = $db->query("UPDATE " . $_SESSION['sessionID'] . " SET url='" . $_GET['address'] . "', indexstr='" . $_GET['schedule'] . "' WHERE person='" . $_GET['person'] . "';");
 
 $db->close();
 return $result;

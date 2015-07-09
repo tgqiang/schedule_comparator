@@ -1,4 +1,10 @@
+<!--
+  * // MANUAL.PHP //
+  * PAGE FOR MANUAL OPTION COMPARISON
+  * ATTN: FURTHER TESTING IS NEEDED TO ENSURE INTEGRITY OF APPLICATION FUNCTIONALITY
+-->
 <?php
+  /* STARTS A BROWSER SESSION */
   session_start();
   
   /* CREATE CONNECTION */
@@ -25,16 +31,16 @@
     $mysqli->close();
     session_unset();
     session_destroy();
-    header("Location: Schedule%20Comparator.html");
+    header("Location: ScheduleComparator.html");
   }
 
   /* CREATE */
   function createSession($db) {
-    /* sql query to create table */
+    /* SQL QUERY TO CREATE TABLE */
     $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
   }
 
-  /* JOIN (EFFECTIVELY DOES NOTHING) */
+  /* JOIN (EFFECTIVELY DOES NOTHING, CAN PLACE CHECKING FUNCTIONS HERE FOR TESTING) */
   function joinSession($db) {
 
   }
@@ -50,7 +56,6 @@
   }
 ?>
 <!DOCTYPE HTML>
-<!--manual.html-->
 <html>
   <head>
     <!-- ALL STYLES AND SCRIPTS HERE -->
@@ -110,11 +115,10 @@
           </form>
         </div>
  
-        <!-- THIS TABLE UPDATES THE GROUP'S SCHEDULES -->
+        <!-- THIS TABLE UPDATES THE GROUP'S SCHEDULES WHEN USER CLICKS UPDATE BUTTON -->
         <div id="users-contain" class="ui-widget">
           <h3>Options:
             <button id="create-user">Add your entry</button>
-            <!--To allow option to modify own entry-->
             <button id="edit-self">Modify your entry</button>
             <button id="reset-table">Update table</button>
             <button id="compute">Compute dates</button>
@@ -135,6 +139,7 @@
         </div>
         <br>
         <br>
+        <!-- FORM FOR USER TO EXIT (RECOMMENDED METHOD FOR END USERS) -->
         <form action="manual.php" method="get">
           <p>Session initialised/joined. To exit, <input type="submit" name="exit" value="click here">.</p>
         </form>

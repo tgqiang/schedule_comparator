@@ -1,4 +1,12 @@
-// ====== manual.js ====== //
+/* 
+ * MANUAL.JS FOR MANUAL.PHP //
+ * CONTAINS THE SCRIPTING FOR MANUAL.PHP. PLEASE DO NOT MODIFY THIS FILE UNLESS
+ * ERRORS/BUGS ARE DETECTED. ATTN: FURTHER TESTING IS NEEDED TO VERIFY INTEGRITY OF ALL
+ * SCRIPTS WRITTEN.
+ */
+
+/* SENSITIVE SQL KEYWORDS DEFINED HERE
+(TO AVOID DUPLICATE DEFINITIONS IN VALIDATION FUNCTIONS) */
 var keywords =   ["select",
                   "update",
                   "delete",
@@ -20,7 +28,11 @@ var xmlhttp = new XMLHttpRequest();
 $(document).ready(function() {
   /* ================= PAGE READY HANDLER ================= */
 	// ACCORDION EFFECT FOR NAVIGATIONS
-  $(".accordion").accordion({collapsible: true, active: false});
+  $(".accordion").accordion({
+    collapsible: true,
+    active: false
+  });
+
 	$(".titles").hover(
 		function(){
 			$(this).addClass('highlight');
@@ -64,7 +76,11 @@ $(document).ready(function() {
 	 minDate: 0,
   });
 
-  /* This will check if name is filled or not */
+  /* NAME VALIDATION FUNCTION:
+  -> ATTEMPTS TO DETECT SENSITIVE SQL KEYWORDS IN NAME FIELD TO PREVENT SQL INJECTIONS
+  -> NAME CANNOT CONTAIN ANYTHING OTHER THAN ALPHABETS, FULL/REAL NAME NOT REQUIRED
+  -> NAME FIELD MUST ALSO NOT BE EMPTY
+  */
   function name_Fill_Validate(inputName) {
     if (inputName.val().length === 0) {
       window.alert("Name not filled.");
@@ -73,7 +89,14 @@ $(document).ready(function() {
       return validate(inputName.val());
     }
   }
-  /* This will check if date is filled or not */
+  
+  /* DATE-FIELD VALIDATION FUNCTION:
+  -> ALLOWS DATE FIELD TO BE EMPTY (BUT QUITE POINTLESS FOR THE USERS THEMSELVES)
+  -> FURTHER DATE VALIDATION HAS BEEN HANDLED BY MULTIDATEPICKER
+     (I.E. ANY ATTEMPTS TO WRITE GIBBERISH IN THE FIELD HAS BEEN ACCOUNTED FOR,
+      EXCEPT THE ONLY CASE WHERE USERS CAN WRITE GIBBERISH OF DIGITS AND BACKSLASHES
+      BUT THIS DOES NOT CAUSE ANY COMPLICATIONS FOR APP FUNCTIONALITY)
+  */
   function isDateFilled(inputDate) {
     if (inputDate.val().length === 0) {
       var proceed = window.confirm("Date field is empty. Proceed?");
@@ -83,13 +106,22 @@ $(document).ready(function() {
     }
   }
  
+  /* FUNCTION TO ADD USER */
   function addUser() {
- 	 /* THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED */
+ 	 /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
    var valid = name_Fill_Validate(name) &&
  	  			  		isDateFilled(dates);
     
     if (valid) {
-        $.get('addEntry.php', {person: name.val(), dates: dates.val(), added: true}, function() { window.alert("Successfully added.") });
+        $.get('addEntry.php',
+              {
+                person: name.val(),
+                dates: dates.val(),
+                added: true
+              },
+              function() {
+                window.alert("Successfully added.");
+              });
         window.sessionStorage.setItem("added", "true");
         $("#create-user").hide();
         $("#edit-self").show();
@@ -97,17 +129,26 @@ $(document).ready(function() {
     dialog.dialog("close");     
   }
 
+  /* FUNCTION TO UPDATE USER'S OWN ENTRY */
   function updateUser() {
-   /* THIS IS TO ENSURE THE DATE AND THE NAME IS FILLED */
+   /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
    var valid = name_Fill_Validate(name) &&
                 isDateFilled(dates);
     
     if (valid) {
-        $.get('updateEntry.php', {person: name.val(), dates: dates.val()}, function() { window.alert("Successfully updated.") });
+        $.get('updateEntry.php',
+              {
+                person: name.val(),
+                dates: dates.val()
+              },
+              function() {
+                window.alert("Successfully updated.");
+              });
     }
     dialog.dialog("close");     
   }
   
+  /* FUNCTION TO SUBMIT USER ENTRIES (EITHER VIA ADD OR UPDATE) */
   function submitUser() {
     if (window.sessionStorage.getItem("added") === "true") {
       event.preventDefault();
@@ -119,7 +160,7 @@ $(document).ready(function() {
     }
   }
 
-  // FORM CONFIGURATIONS
+  /* FORM CONFIGURATIONS */
   dialog = $("#dialog-form").dialog({
     autoOpen: false,
     height: 300,
@@ -136,32 +177,27 @@ $(document).ready(function() {
     }
   });
   
-  // FORM SUBMIT EVENT
+  /* FORM SUBMIT EVENT */
   form = dialog.find("form").on("submit", function(event) {
     event.preventDefault();
   });
   
-  // HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY
+  /* BUTTON-CLICK HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY */
   $("#create-user, #edit-self").button().on("click", function() {
     dialog.dialog("open");
   });
 
-  // REFRESHES TABLE THAT IS DISPLAYED
+  /* BUTTON-CLICK HANDLER TO REFRESH TABLE THAT IS DISPLAYED */
   $("#reset-table").button().on("click", function() {
     $("tr#entry, td#entry").remove();
     $("#users tbody").load('refreshTable.php', function(result) {
       alert("Table refreshed.");
     });
   });
-
-  /*
-  // HANDLER WHEN USER WANTS TO MODIFY SELF SCHEDULE ENTRY
-  $("#edit-self").button().on("click", function() {
-    $("#dialog-form").dialog("open");
-  });
-  */
   
-  // HANDLER FOR COMMON DATE COMPUTATION
+  /* BUTTON-CLICK HANDLER FOR COMMON DATE COMPUTATION:
+  -> ATTN: SHOULD WE STICK TO WINDOW.ALERT() OR SHOULD WE PRINT RESULT IN THE HTML?
+   */
   $("#compute").button().on("click", function() {
     $(document).load('computeDates.php', function(result) {
       var tablesize = parseInt(result.substring(result.length - 1));
@@ -173,7 +209,7 @@ $(document).ready(function() {
 })
 
 /* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
-// COMPUTATION FUNCTION
+/* COMPUTATION FUNCTION (USING ARRAY-POINTER SLIDER METHOD) */
 function compute_Dates(dateArray, totalUsers) {
   var count = 1;
   var result = "";
@@ -198,31 +234,15 @@ function compute_Dates(dateArray, totalUsers) {
    }
 }
 
-// DATE COMPARATOR OBJECT (IN JAVASCRIPT)
+/* DATE-COMPARATOR OBJECT (IN JAVASCRIPT) */
 function datesort(date1, date2) {
   var a = new Date(date1);
   var b = new Date(date2);
   return a - b;
 }
 
-// INPUT VALIDATION
+/* INPUT VALIDATION FUNCTION */
 function validate(inputName) {
-  /*
-  var keywords = ["select",
-                  "update",
-                  "delete",
-                  "insert",
-                  "create",
-                  "alter",
-                  "drop",
-                  "into",
-                  "table",
-                  "database",
-                  "index",
-                  "or ",
-                  "and "];
-                  */
-
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
@@ -244,7 +264,7 @@ function validate(inputName) {
   }
 }
 
-// DATEPICKER CLOSING FUNCTION
+/* DATEPICKER CLOSING FUNCTION */
 function closeDatePicker() {
   $('#dates').multiDatesPicker('hide');
 }

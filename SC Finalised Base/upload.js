@@ -1,11 +1,74 @@
-// ====== upload.js ====== //
+/*
+ * // UPLOAD.JS FOR UPLOAD.PHP //
+ * CONTAINS ALL THE SCRIPTING FOR UPLOAD.PHP. ATTN: FURTHER TESTING REQUIRED TO
+ * VERIFY INTEGRITY OF APP FUNCTIONALITY. ALSO, CODE TO UPDATE WHICH VERSION OF
+ * THE JSON FILE CAN BE WRITTEN TO REDUCE/REMOVE NEED FOR ADMIN TO UPDATE THIS
+ * PORTION OF THE PROGRAM EACH TIME THE NEW SEMESTER SETS IN.
+ *
+*/
+
+/* SENSITIVE SQL KEYWORDS DEFINED HERE
+   (TO AVOID DUPLICATE DEFINITIONS IN VALIDATION FUNCTIONS)
+*/
+var keywords =   ["select",
+                  "update",
+                  "delete",
+                  "insert",
+                  "create",
+                  "alter",
+                  "drop",
+                  "into",
+                  "table",
+                  "database",
+                  "index",
+                  "or ",
+                  "and "];
+
+
+/* VARIABLE TO HANDLE AJAX REQUESTS */
 var xmlhttp = new XMLHttpRequest();
+
+/*
+ * WEEKARRAY VARIABLE
+ * sets up 2D-array for computing common dates and times to meet up
+ * for every 1/2 hr interval from 8am to 11pm each day
+*/
+var weekArray = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // Mon
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // Tue
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // Wed
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],  // Thur
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]; // Fri
+
+/* VARIABLE TO STORE JSON DATA */
+var moduleObjects;
+
+/*
+// pre-processing to be done to url to find out/update which JSON file to retrieve //
+var current = CURRENT_DATE;
+var url_JSON = 'http://api.nusmods.com/'; '2015-2016/1/modules.json'
+if (current.MONTH === AUGUST) {
+  url_JSON += ((current.YEAR + 1) + '-' + (current.YEAR + 2));
+}
+else {
+  
+}
+*/
+
+/* GRABBING DATA FROM NUSMODS WITH NUSMODS API
+(AUTO RETRIEVE FEATURE NOT FULLY COMPLETED YET) */
+$.getJSON('http://api.nusmods.com/2015-2016/1/modules.json',
+          function (data) {
+            moduleObjects = data;
+          })
 
 /* READY FUNCTIONS */
 $(document).ready(function() {
   /* ================= PAGE READY HANDLER ================= */
   // ACCORDION EFFECT FOR USEFUL LINKS
-	$(".accordion").accordion({collapsible: true, active: false});
+	$(".accordion").accordion({
+    collapsible: true,
+    active: false
+  });
   
   // TEST IF ENTRY-ADDED HANDLER
   if (window.sessionStorage.getItem("added") === "true") {
@@ -37,7 +100,11 @@ $(document).ready(function() {
   name = $("#name"),
   address = $('#address');
 
-  /* This will check if name is filled or not */
+  /* NAME VALIDATION FUNCTION:
+  -> NAME MUST NOT BE EMPTY
+  -> REAL/FULL NAME NOT REQUIRED
+  -> ATTEMPTS TO DETECT SENSITIVE SQL KEYWORDS INSIDE TO PREVENT SQL INJECTIONS
+  */
   function name_Fill_Validate(inputName) {
     if (inputName.val().length === 0) {
       window.alert("Name not filled.");
@@ -47,14 +114,21 @@ $(document).ready(function() {
     }
   }
   
-  /* This will check if address (URL) is filled or not */
+  /* URL VALIDATION FUNCTION:
+  -> URL MUST NOT BE EMPTY
+  -> URL MUST BE PROVEN TO BE FROM NUSMODS ONLY
+     (STRICTLY URL FORMAT, NO OTHER SOURCES/FORMATS ACCEPTABLE)
+  */
   function url_Fill_Validate(urlstr) {
-    // Test for URL in the form of 'http://modsn.us/*'
+    /* TEST FOR URL IN THE FORM OF 'HTTP://MODSN.US/...' */
     var test1 = urlstr.substr(0, 16) === 'http://modsn.us/';
 
-    // Test for URL in the form of 'http://nusmods.com/timetable/*'
-    var test2 = urlstr.substr(0, 29) === 'http://nusmods.com/timetable/';
+    /* TEST FOR URL IN THE FORM OF 'HTTP://NUSMODS.COM/TIMETABLE/...' */
+    var test2 = urlstr.substr(0, 30) === 'https://nusmods.com/timetable/';
 
+    /* THIS ARRAY OF KEYWORDS DIFFER ONLY BY 'TABLE' WORD FROM THE ARRAY OF KEYWORDS
+       THAT IS PUBLICLY DECLARED (SINCE URL CONTAINS THE WORD 'TABLE')
+    */
     var keywords = ["select",
                     "update",
                     "delete",
@@ -63,7 +137,6 @@ $(document).ready(function() {
                     "alter",
                     "drop",
                     "into",
-                    "table",
                     "database",
                     "index",
                     "or ",
@@ -94,11 +167,43 @@ $(document).ready(function() {
                 url_Fill_Validate(address.val());
     
     if (valid) {
-        $.get('addEntryURL.php', {person: name.val(), address: address.val(), added: true}, function() { window.alert("Successfully added.") });
+      var inputURL = address.val();
+      /* IF INPUT URL IS IN CONDENSED FORM */
+      if (inputURL.substr(0, 16) === 'http://modsn.us/') {
+        $.get('redirectURL.php',
+              {
+                address: address.val(),
+              },
+              function(data) {
+                var userSchedule = getSchedule(data);
+                $.get('addEntryURL.php',
+                      {
+                        person: name.val(),
+                        address: data,
+                        schedule: userSchedule
+                      },
+                      function(data) {
+                        window.alert("Successfully added.");
+                      });
+              });
+      }
+      /* IF INPUT URL IS IN ORIGINAL FORM */
+      else {
+        var userSchedule = getSchedule(inputURL);
+        $.get('addEntryURL.php',
+              {
+                person: name.val(),
+                address: address.val(),
+                schedule: userSchedule
+              },
+              function(data) {
+                window.alert("Successfully added.");
+              });
         window.sessionStorage.setItem("added", "true");
         $("#create-user").hide();
         $("#edit-self").show();
         dialog.dialog("close");
+      }
     }
     else {
       event.preventDefault();
@@ -111,8 +216,40 @@ $(document).ready(function() {
                 url_Fill_Validate(address.val());
     
     if (valid) {
-        $.get('updateEntryURL.php', {person: name.val(), address: address.val()}, function() { window.alert("Successfully updated.") });
-        dialog.dialog("close");
+      var inputURL = address.val();
+      /* IF INPUT URL IS IN CONDENSED VERSION */
+      if (inputURL.substr(0, 16) === 'http://modsn.us/') {
+        $.get('redirectURL.php',
+              {
+                address: address.val(),
+              },
+              function(data) {
+                var userSchedule = getSchedule(data);
+                $.get('updateEntryURL.php',
+                      {
+                        person: name.val(),
+                        address: data,
+                        schedule: userSchedule
+                      },
+                      function(data) {
+                        window.alert("Successfully updated.");
+                      });
+              });
+      }
+      /* IF INPUT URL IS IN ORIGINAL FORM */
+      else {
+        var userSchedule = getSchedule(inputURL);
+        $.get('updateEntryURL.php',
+              {
+                person: name.val(),
+                address: inputURL,
+                schedule: userSchedule
+              },
+              function(data) {
+                window.alert("Successfully updated.");
+              });
+      }
+      dialog.dialog("close");
     }
     else {
       event.preventDefault();
@@ -130,7 +267,7 @@ $(document).ready(function() {
     }
   }
 
-  // FORM CONFIGURATIONS
+  /* FORM CONFIGURATIONS */
   dialog = $("#dialog-form").dialog({
     autoOpen: false,
     height: 300,
@@ -147,87 +284,36 @@ $(document).ready(function() {
     }
   });
   
-  // FORM SUBMIT EVENT
+  /* FORM SUBMIT EVENT */
   form = dialog.find("form").on("submit", function(event) {
     event.preventDefault();
   });
 
-  // HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY
+  /* BUTTON-CLICK HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY */
   $("#create-user, #edit-self").button().on("click", function() {
     dialog.dialog("open");
   });
 
-  // REFRESHES TABLE THAT IS DISPLAYED
+  /* BUTTON-CLICK HANDLER THAT REFRESHES TABLE THAT IS DISPLAYED */
   $("#reset-table").button().on("click", function() {
     $("tr#entry, td#entry").remove();
-    $("#users tbody").load('refreshTable.php', function(result) {
+    $("#users tbody").load('refreshTableURL.php', function(result) {
       alert("Table refreshed.");
     });
   });
 
-  /* ALL THESE FUNCTIONS CAN BE REUSED
-
-  // HANDLER WHEN USER WANTS TO MODIFY SELF SCHEDULE ENTRY
-  $("#edit-self").button().on("click", function() {
-    $("#dialog-form").dialog("open");
-  });
-
-
-  // HANDLER FOR COMMON DATE COMPUTATION
+  /* BUTTON-CLICK HANDLER FOR COMMON DATE-TIME COMPUTATION */
   $("#compute").button().on("click", function() {
-    $(document).load('computeDates.php', function(result) {
-      var tablesize = parseInt(result.substring(result.length - 1));
-      var arrayOfDates = result.substring(0, result.length - 1).split(", ").sort(datesort);
-      compute_Dates(arrayOfDates, tablesize);
+    $.get('computeDatesURL.php', function(data) {
+      window.alert("Times available:\n\n" + data);
     });
   });
-  */
   /* ========== !UPLOAD.HTML USER FORM SCRIPTING ========== */
 })
 
 /* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
-/*
-// COMPUTATION FUNCTION TO BE WRITTEN FOR NUSMODS OPTION, NOT THE ONE BELOW
-function compute_Dates(dateArray, totalUsers) {
-  var count = 1;
-  var result = "";
-
-  for (var i = 0; i < dateArray.length; i = i + 1) {
-    if (dateArray[i] === dateArray[i + 1]) {
-      count = count + 1;
-    }
-    else {
-      if (count === totalUsers) {
-        result = result + ("[" + dateArray[i] + "] ");
-      }
-      count = 1;
-    }
-  }
-
-  if (result === "") {
-    window.alert("There is no common date where all of you are available. Please try to reach a compromise then try again.");
-  }
-  else {
-    window.alert("There are dates that all of you can meet up: " + result.trim());
-   }
-}
-*/
-// INPUT VALIDATION
+/* INPUT VALIDATION FUNCTION */
 function validate(inputName) {
-  var keywords = ["select",
-                  "update",
-                  "delete",
-                  "insert",
-                  "create",
-                  "alter",
-                  "drop",
-                  "into",
-                  "table",
-                  "database",
-                  "index",
-                  "or ",
-                  "and "];
-
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
@@ -248,4 +334,180 @@ function validate(inputName) {
     return true;
   }
 }
+
+/* FUNCTION TO RETRIEVE SCHEDULE FROM USER-SUPPLIED NUSMODS URL */
+function getSchedule(url) {
+  /* --- URL PRE-PROCESSING --- */
+  url = url.substring(43).replace(/\?|\%5B|\%5D|\&|[\[\]]/ig, ' ').replace(/=/g, ''); // eliminates unwanted stuff in URL
+  var semester = parseInt(url.substring(0, 1)); // stores semester
+  var url_args = url.substring(2).split(' '); // stores modules data
+  var date_time_array = [];
+  var timetable;
+
+  /* FUNCTION THAT RETRIEVES AN INDIVIDUAL'S NUS SCHEDULE FOR SETTING WEEKARRAY */
+  function retrieve_Date_Time(arr) {
+    for (var i = 0; i < arr.length; i += 3) {
+      for (var x = 0; x < moduleObjects.length; x++) {
+        if (moduleObjects[x].ModuleCode === arr[i]) {
+          timetable = moduleObjects[x].Timetable;
+          
+          for (var y = 0; y < timetable.length; y++) {
+            if (timetable[y].LessonType === customConvert(1, arr[i + 1]) &&
+                timetable[y].ClassNo === arr[i + 2]) {
+              date_time_array.push([timetable[y].DayText, timetable[y].StartTime, timetable[y].EndTime]);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  retrieve_Date_Time(url_args);
+  return setTimes(date_time_array);
+}
+
+/* FUNCTION TO SET OCCUPIED SCHEDULES IN WEEKARRAY */
+function setTimes(dt_arr) {
+  for (var n = 0; n < dt_arr.length; n++) {
+    if (dt_arr[n][2] === '2330' || dt_arr[n][2] === '2359') {
+      for (var start = customConvert(3, dt_arr[n][1], 'index'); start <= 30; start++) {
+        weekArray[customConvert(2,dt_arr[n][0], 'index')][start] += 1;
+      }
+    }
+    else {
+      for (var start = customConvert(3, dt_arr[n][1], 'index'); start < customConvert(3, dt_arr[n][2], 'index'); start++) {
+        weekArray[customConvert(2,dt_arr[n][0], 'index')][start] += 1;
+      }
+    }
+  }
+  return calculateAvailable();
+}
+
+/* FUNCTION THAT RETURNS LONG STRING OF INDEXES WHERE USER IS FREE
+   (FOR USE IN PROCESSING WITHIN PHP FILE LATER ON)
+*/
+function calculateAvailable() {
+  var times = '';
+  for (var j = 0; j < weekArray.length; j++) {
+    for (var k = 0; k < weekArray[j].length; k++) {
+      if (weekArray[j][k] === 0) {
+        times += (j + '' + k + ' ');
+      }
+    }
+  }
+  return times.trim();
+}
+
+// PREDEFINED CUSTOM CONVERSION FUNCTION
+// option 1: typeCode --> typeCode in JSON file
+// option 2: 
+//   dir = 'index': DayText (String) --> index (Integer)
+//   dir = 'day': index (Integer) --> DayText (String)
+// option 3:
+//   dir = 'index': time (String) --> index (Integer) (8am -> index 0, ... ...)
+//   dir = 'time' : index (Integer) ---> time (String)
+// arg: typeCode (String) / DayText (String) / time (String) / index (Integer)
+
+function customConvert(option, arg, dir) {
+  if (option === 1) {
+    switch (arg) {
+      case 'LEC':
+        return 'Lecture';
+        break;
+      case 'TUT':
+        return 'Tutorial';
+        break;
+      case 'SEC':
+        return 'Sectional Teaching';
+        break;
+      case 'LAB':
+        return 'Laboratory';
+        break;
+      case 'REC':
+        return 'Recitation';
+        break;
+      default:
+        return 'Invalid typeCode.';
+    }
+  }
+  else if (option === 2) {
+    if (dir === 'index') {
+      switch (arg) {
+        case 'Monday':
+          return 0;
+          break;
+        case 'Tuesday':
+          return 1;
+          break;
+        case 'Wednesday':
+          return 2;
+          break;
+        case 'Thursday':
+          return 3;
+          break;
+        case 'Friday':
+          return 4;
+          break;
+        case 'Saturday':
+          return 5;
+          break;
+        case 'Sunday':
+          return 6;
+          break;
+        default:
+          return 'Invalid DayText.';
+      }
+    }
+    else if (dir === 'day') {
+      switch (arg) {
+        case 0:
+          return 'Monday';
+          break;
+        case 1:
+          return 'Tuesday';
+          break;
+        case 2:
+          return 'Wednesday';
+          break;
+        case 3:
+          return 'Thursday';
+          break;
+        case 4:
+          return 'Friday';
+          break;
+        case 5:
+          return 'Saturday';
+          break;
+        case 6:
+          return 'Sunday';
+          break;
+        default:
+          return 'Invalid index.';
+      }
+    }
+    else {
+      return 'Invalid direction.';
+    }
+  }
+  else if (option === 3) {
+    if (dir === 'index') {
+      return Math.round((parseInt(arg) / 100 - 8) * 2);
+    }
+    else if (dir === 'time') {
+      if (arg < 4) {
+        return '0' + ((Math.floor(arg / 2) + 8) * 100 + (arg % 2) * 30);
+      }
+      else {
+        return '' + ((Math.floor(arg / 2) + 8) * 100 + (arg % 2) * 30);
+      }
+    }
+    else {
+      return 'Invalid direction.';
+    }
+  }
+  else {
+    return 'Invalid option.';
+  }
+}
+
 /* ========== !PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */

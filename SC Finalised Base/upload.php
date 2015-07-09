@@ -1,4 +1,10 @@
+<!--
+  * // UPLOAD.PHP //
+  * PAGE FOR UPLOAD COMPARISON OPTION. ATTN: FURTHER TESTING NEEDED TO VERIFY
+  * INTEGRITY OF APP FUNCTIONALITY.
+-->
 <?php
+  /* START BROWSER SESSION */
   session_start();
   
   /* CREATE CONNECTION */
@@ -19,16 +25,16 @@
     $mysqli->close();
     session_unset();
     session_destroy();
-    header("Location: Schedule%20Comparator.html");
+    header("Location: ScheduleComparator.html");
   }
 
   /* CREATE */
   function createSession($db) {
-    /* sql query to create table */
-    $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, url VARCHAR(8000));");
+    /* SQL QUERY TO CREATE TABLE */
+    $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, url VARCHAR(8000) NOT NULL, indexstr VARCHAR(8000));");
   }
 
-  /* JOIN (to work on showing table on load) */
+  /* JOIN (EFFECTIVELY DOES NOTHING, CHECKING FUNCTIONS CAN BE ADDED HERE FOR TESTING) */
   function joinSession($db) {
 
   }
@@ -44,7 +50,6 @@
   }
 ?>
 <!DOCTYPE HTML>
-<!--help.html-->
 <html>
   <head>
     <!-- ALL THE STYLES AND SCRIPTS NEEDED ARE HERE -->
@@ -84,9 +89,9 @@
 
     <div id="upload-page" class="jumbotron">
       <div id="center" class="container">
-        <!-- PLACEHOLDER FOR UPLOAD.HTML FOR NOW -->
-        <h2>Timetable Upload</h2>
-        <p>Placeholder for NUSMods Timetable URL upload option!</p>
+        <h2>NUSMods Timetable URL Entry</h2>
+        <br>
+        
         <div id="dialog-form" title="Add/modify your entry">
           <!-- FORM FOR MANUAL ENTRY -->
           <form>
@@ -103,14 +108,13 @@
           </form>
         </div>
         <br>
-        <!-- THIS TABLE UPDATES WHO IN THE GROUP HAS UPLOADED URL -->
+        <!-- THIS TABLE DISPLAYS NAME AND URL -->
         <div id="users-contain" class="ui-widget">
           <h3>Options:
             <button id="create-user">Add your entry</button>
-            <!--To allow option to modify own entry-->
             <button id="edit-self">Modify your entry</button>
             <button id="reset-table">Update table</button>
-            <!--<button id="compute">Compute dates</button>-->
+            <button id="compute">Compute dates</button>
           </h3>
           <table id="users" class="ui-widget ui-widget-content">
             <thead>
@@ -120,14 +124,12 @@
               </tr>
             </thead>
             <tbody>
-              <?php
-                include_once 'refreshTable.php';
-              ?>
             </tbody>
           </table>
         </div>
         <br>
         <br>
+        <!-- FORM FOR USER EXIT (RECOMMENDED METHOD FOR END USERS) -->
         <form action="upload.php" method="get">
           <p>Session initialised/joined. To exit, <input type="submit" name="exit" value="click here">.</p>
         </form>
