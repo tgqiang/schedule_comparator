@@ -109,23 +109,39 @@ body {
 
 /* ========== HELP PAGE ========== */
 .col-md-4 img {
-	margin: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 	width: 80%;
 	height: 70%;
 	padding: 10px;
 }
 
-.col-md-4 p {
+.col-md-4 h4, .col-md-4 img, .col-md-4 p {
 	text-align: center;
+}
+
+.col-md-4 p {
 	font-size: 100%;
 }
 
 #show_create img, #show_join img, #show_manual img, #show_upload img {
-	display: inline;
+	display: block;
 	margin: auto;
 	width: 80%;
 	height: 60%;
 	padding: 10px;
+}
+
+#calendar_icon {
+	width: 50%;
+	height: 50%;
+}
+
+#create, #join, #manual, #upload {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 /* ========== HELP PAGE ========== */
 

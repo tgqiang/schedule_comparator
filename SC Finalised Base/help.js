@@ -16,6 +16,7 @@ $(document).ready(function() {
   /* ========== HELP DIALOG SCRIPTING ========== */
   
   $("#show_create").dialog({
+    title: 'How to create a session',
     width: 500,
     height: 500,
     autoOpen: false,
@@ -29,11 +30,12 @@ $(document).ready(function() {
     }
   });
 
-  $("#create").button().click(function() {
+  $("#create").click(function() {
     $("#show_create").dialog("open");
   });
   
   $("#show_join").dialog({
+    title: 'How to join a session',
     width: 500,
     height: 500,
     autoOpen: false,
@@ -47,11 +49,12 @@ $(document).ready(function() {
     }
   });
 
-  $("#join").button().click(function() {
+  $("#join").click(function() {
     $("#show_join").dialog("open");
   });
 
   $("#show_manual").dialog({
+    title: 'Using the manual comparison option',
     width: 500,
     height: 500,
     autoOpen: false,
@@ -65,11 +68,12 @@ $(document).ready(function() {
     }
   });
 
-  $("#manual").button().click(function() {
+  $("#manual").click(function() {
     $("#show_manual").dialog("open");
   });
 
   $("#show_upload").dialog({
+    title: 'Using the timetable comparison option',
     width: 500,
     height: 500,
     autoOpen: false,
@@ -83,7 +87,7 @@ $(document).ready(function() {
     }
   });
 
-  $("#upload").button().click(function() {
+  $("#upload").click(function() {
     $("#show_upload").dialog("open");
   });
 

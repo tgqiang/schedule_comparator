@@ -39,7 +39,7 @@
 =================================================================
 
 
--> [Main page] (Finalised and should not be touched)
+-> [Main page]
 =================================================================
 | - main.js
 | :JS file for homepage
@@ -56,6 +56,9 @@
   |
   | - help.html
   | :Help page for the application
+  |
+  | - PNG files
+  | :For help page
   |
   ===============================================================
  ||

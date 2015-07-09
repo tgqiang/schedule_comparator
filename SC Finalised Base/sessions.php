@@ -49,18 +49,25 @@
   
   /* IF-ELSE STATEMENT FOR USER REDIRECTION FOR SESSION-JOINERS */
   else if (isset($_GET['id_join']) && isset($_GET['join_submit'])) {
-    $_SESSION['sessionID'] = $_GET['id_join'];
-    $_SESSION['join'] = true;
-    $table = $mysqli->query("SELECT method FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
-    $option = $table->fetch_row();
-    if ($option[0] === "manual") {
-      header("Location: ./manual.php?sessionID=" . $_GET['id_join']);
-    }
-    else if ($option[0] === "upload") {
-      header("Location: ./upload.php?sessionID=" . $_GET['id_join']);
+    $invalidID = $mysqli->query("DESCRIBE " . $_SESSION['sessionID']);
+    if ($invalidID !== FALSE) {
+      $_SESSION['sessionID'] = $_GET['id_join'];
+      $_SESSION['join'] = true;
+      $table = $mysqli->query("SELECT method FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
+      $option = $table->fetch_row();
+      if ($option[0] === "manual") {
+        header("Location: ./manual.php?sessionID=" . $_GET['id_join']);
+      }
+      else if ($option[0] === "upload") {
+        header("Location: ./upload.php?sessionID=" . $_GET['id_join']);
+      }
+      else {
+        
+      }
     }
     else {
-      
+      echo "<script>window.alert('This session does not exist. Please ensure that session ID comes from an existing session.')</script>";
+      $_SESSION['sessionID'] = NULL;
     }
   }
 
@@ -88,7 +95,7 @@
       <div class="container">
         <ul class="pull-left">
           <!-- BASE NAVIGATION FOR COMPARATOR -->
-          <li><a href="Schedule%20Comparator.html">Home</a></li>
+          <li><a href="ScheduleComparator.html">Home</a></li>
         </ul>
 
         <ul class="pull-right">
