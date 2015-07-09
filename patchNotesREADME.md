@@ -1,6 +1,18 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 09/07/2015
+Changes/Notes:
+* Upload implementations are fully complete
+* Patch to sessions.php to prevent redirection upon attempting to join non-existent session
+* Help dialog detached from homepage as a stand-alone help page
+
+Required commits:
+* Rigourous testing needed for application. (_Potential issue, no commit needed if this issue is confirmed as absent_) Need to also verify whether table is dropped when members who joined session leaves it (**serious issue, affects base functionality of manual comparison method**)
+* Proceed to migrate to Datepair interface when testing is completed.
+
+----
+
 # 01/07/2015
 Changes/Notes:
 * Session and Manual implementations are complete
