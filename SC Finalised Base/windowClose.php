@@ -8,7 +8,7 @@
 session_start();
 $db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 
-if (isset($_SESSION['create']) {
+if (isset($_SESSION['create'])) {
 	$db->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
 	$db->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "';");
 }
@@ -16,4 +16,6 @@ if (isset($_SESSION['create']) {
 $db->close();
 session_unset();
 session_destroy();
+
+header("Location: ScheduleComparator.html");
 ?>

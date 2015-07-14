@@ -60,9 +60,14 @@ $(document).ready(function() {
   });
 
   // IF USER CONFIRMS LEAVING PAGE VIA 'X' BUTTON OF THE BROWSER
+  // CURRENTLY DOES NOT WORK IF USER CLICKS 'X' ON BROWSER TAB
   window.onunload = function() {
-    xmlhttp.open('GET', 'windowClose.php', true);
-    xmlhttp.send();
+    window.sessionStorage.setItem("added", "false");
+    $.ajax({
+      async: false,
+      type: 'GET',
+      url: 'windowClose.php'
+    });
   };
   /* =============== !'X' BUTTON EXIT HANDLER =============== */
 
@@ -99,7 +104,7 @@ $(document).ready(function() {
   */
   function isDateFilled(inputDate) {
     if (inputDate.val().length === 0) {
-      var proceed = window.confirm("Date field is empty. Proceed?");
+      var proceed = window.confirm("You have not entered a date yet. Are you sure you want to proceed?");
       return proceed;
     } else {
       return true;
@@ -108,9 +113,9 @@ $(document).ready(function() {
  
   /* FUNCTION TO ADD USER */
   function addUser() {
- 	 /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
+   /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
    var valid = name_Fill_Validate(name) &&
- 	  			  		isDateFilled(dates);
+                isDateFilled(dates);
     
     if (valid) {
         $.get('addEntry.php',
@@ -119,14 +124,24 @@ $(document).ready(function() {
                 dates: dates.val(),
                 added: true
               },
-              function() {
-                window.alert("Successfully added.");
+              function(data) {
+                window.alert(data);
+                var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
+                if (data !== nameUsed) {
+                  name.attr("readonly", "true");
+                  window.sessionStorage.setItem("added", "true");
+                  $("#create-user").hide();
+                  $("#edit-self").show();
+                  dialog.dialog("close");
+                }
+                else {
+                  event.preventDefault();
+                }
               });
-        window.sessionStorage.setItem("added", "true");
-        $("#create-user").hide();
-        $("#edit-self").show();
     }
-    dialog.dialog("close");     
+    else {
+      event.preventDefault();
+    }
   }
 
   /* FUNCTION TO UPDATE USER'S OWN ENTRY */
@@ -136,16 +151,19 @@ $(document).ready(function() {
                 isDateFilled(dates);
     
     if (valid) {
-        $.get('updateEntry.php',
+        $.get('addEntry.php',
               {
                 person: name.val(),
                 dates: dates.val()
               },
-              function() {
-                window.alert("Successfully updated.");
+              function(data) {
+                window.alert(data);
               });
+        dialog.dialog("close");
     }
-    dialog.dialog("close");     
+    else {
+      event.preventDefault();
+    }
   }
   
   /* FUNCTION TO SUBMIT USER ENTRIES (EITHER VIA ADD OR UPDATE) */
@@ -191,7 +209,7 @@ $(document).ready(function() {
   $("#reset-table").button().on("click", function() {
     $("tr#entry, td#entry").remove();
     $("#users tbody").load('refreshTable.php', function(result) {
-      alert("Table refreshed.");
+      alert("The table is updated.");
     });
   });
   
@@ -230,7 +248,7 @@ function compute_Dates(dateArray, totalUsers) {
     window.alert("There is no common date where all of you are available. Please try to reach a compromise then try again.");
   }
   else {
-    window.alert("There are dates that all of you can meet up: " + result.trim());
+    window.alert("There are date(s) that all of you can meet up and they are: " + result.trim());
    }
 }
 
@@ -246,17 +264,17 @@ function validate(inputName) {
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
-    window.alert("Input field is empty.");
+    window.alert("You have not filled in a name. Please fill in a name.");
     return false;
   }
   else if (sample.replace(/[a-zA-Z\s]/g,"").length > 0) {
-    window.alert("Input name should only contain a-z or A-Z. Please enter name again.");
+    window.alert("Your name should only contain a-z or A-Z. Please enter a proper name again.");
     return false;
   }
   else {
     for (var i = 0; i < keywords.length; i = i + 1) {
       if (sample.includes(keywords[i])) {
-        window.alert("Input name contains illegal keywords. Please enter name again.");
+        window.alert("Your name is invalid. Please enter a proper name again.");
         return false;
       }
     }

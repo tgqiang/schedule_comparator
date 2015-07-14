@@ -131,7 +131,7 @@
           <fieldset>
             <label><u>Create session</u></label>
             <label for="session_name">Session ID:</label>
-            <input type="text" name="id_create" id="session_id_create" class="text ui-widget-content ui-corner-all">
+            <input type="text" name="id_create" id="session_id_create" class="text ui-widget-content ui-corner-all" readonly>
             <button onclick="generateID()">Generate ID</button>
             <br>
             <label for="create_option">Type of comparison to use:</label>

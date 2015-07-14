@@ -24,25 +24,19 @@
 
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    if (isset($_SESSION['create'])) {
-      $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
-      $mysqli->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
-    }
-    $mysqli->close();
-    session_unset();
-    session_destroy();
-    header("Location: ScheduleComparator.html");
+    include_once 'windowClose.php';
   }
 
   /* CREATE */
   function createSession($db) {
+    echo $_SESSION['create'];
     /* SQL QUERY TO CREATE TABLE */
     $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
   }
 
   /* JOIN (EFFECTIVELY DOES NOTHING, CAN PLACE CHECKING FUNCTIONS HERE FOR TESTING) */
   function joinSession($db) {
-
+    echo $_SESSION['join'];
   }
 
   if (isset($_SESSION['create'])) {
@@ -131,9 +125,6 @@
               </tr>
             </thead>
             <tbody>
-              <?php
-                include_once 'refreshTable.php';
-              ?>
             </tbody>
           </table>
         </div>

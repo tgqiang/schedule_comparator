@@ -89,8 +89,12 @@ $(document).ready(function() {
 
   // IF USER CONFIRMS LEAVING PAGE VIA 'X' BUTTON OF THE BROWSER
   window.onunload = function() {
-    xmlhttp.open('GET', 'windowClose.php', true);
-    xmlhttp.send();
+    window.sessionStorage.setItem("added", "false");
+    $.ajax({
+      async: false,
+      type: 'GET',
+      url: 'windowClose.php'
+    });
   };
   /* =============== !'X' BUTTON EXIT HANDLER =============== */
 
@@ -107,7 +111,7 @@ $(document).ready(function() {
   */
   function name_Fill_Validate(inputName) {
     if (inputName.val().length === 0) {
-      window.alert("Name not filled.");
+      window.alert("Name is not filled. Please fill in a name.");
       return false;
     } else {
       return validate(inputName.val());
@@ -121,10 +125,12 @@ $(document).ready(function() {
   */
   function url_Fill_Validate(urlstr) {
     /* TEST FOR URL IN THE FORM OF 'HTTP://MODSN.US/...' */
-    var test1 = urlstr.substr(0, 16) === 'http://modsn.us/';
+    var test1 = urlstr.substr(0, 16) === 'http://modsn.us/' &&
+                urlstr.substr(16).replace(/\w|[\=\[\]\&\?\/\.\:\-]/gi, '').length === 0;
 
     /* TEST FOR URL IN THE FORM OF 'HTTP://NUSMODS.COM/TIMETABLE/...' */
-    var test2 = urlstr.substr(0, 30) === 'https://nusmods.com/timetable/';
+    var test2 = urlstr.substr(0, 30) === 'https://nusmods.com/timetable/' &&
+                urlstr.substr(30).replace(/\w|[\=\[\]\&\?\/\.\:\-]/gi, '').length === 0;
 
     /* THIS ARRAY OF KEYWORDS DIFFER ONLY BY 'TABLE' WORD FROM THE ARRAY OF KEYWORDS
        THAT IS PUBLICLY DECLARED (SINCE URL CONTAINS THE WORD 'TABLE')
@@ -143,17 +149,17 @@ $(document).ready(function() {
                     "and "];
 
     if (urlstr.length === 0) {
-      window.alert("URL input field is empty.");
+      window.alert("You have not filled in an NUSMods timetable URL, please enter in your timetable URL.");
       return false;
     }
     else if (!(test1 || test2)) {
-      window.alert("Input URL does not come from NUSMods.");
+      window.alert("Input URL does not seem to come from NUSMods or is invalid. Please enter a valid NUSMods timetable URL.");
       return false;
     }
     else {
       for (var i = 0; i < keywords.length; i = i + 1) {
         if (urlstr.includes(keywords[i])) {
-          window.alert("Input URL contains illegal keywords.");
+          window.alert("Input URL seems to be an invalid one. Please enter a proper NUSMods timetable URL.");
           return false;
         }
       }
@@ -180,10 +186,22 @@ $(document).ready(function() {
                       {
                         person: name.val(),
                         address: data,
-                        schedule: userSchedule
+                        schedule: userSchedule,
+                        added: true
                       },
                       function(data) {
-                        window.alert("Successfully added.");
+                        window.alert(data);
+                        var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
+                        if (data !== nameUsed) {
+                          name.attr("readonly", "true");
+                          window.sessionStorage.setItem("added", "true");
+                          $("#create-user").hide();
+                          $("#edit-self").show();
+                          dialog.dialog("close");
+                        }
+                        else {
+                          event.preventDefault();
+                        }
                       });
               });
       }
@@ -194,15 +212,23 @@ $(document).ready(function() {
               {
                 person: name.val(),
                 address: address.val(),
-                schedule: userSchedule
+                schedule: userSchedule,
+                added: true
               },
               function(data) {
-                window.alert("Successfully added.");
+                window.alert(data);
+                var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
+                if (data !== nameUsed) {
+                  name.attr("readonly", "true");
+                  window.sessionStorage.setItem("added", "true");
+                  $("#create-user").hide();
+                  $("#edit-self").show();
+                  dialog.dialog("close");
+                }
+                else {
+                  event.preventDefault();
+                }
               });
-        window.sessionStorage.setItem("added", "true");
-        $("#create-user").hide();
-        $("#edit-self").show();
-        dialog.dialog("close");
       }
     }
     else {
@@ -225,28 +251,28 @@ $(document).ready(function() {
               },
               function(data) {
                 var userSchedule = getSchedule(data);
-                $.get('updateEntryURL.php',
+                $.get('addEntryURL.php',
                       {
                         person: name.val(),
                         address: data,
                         schedule: userSchedule
                       },
                       function(data) {
-                        window.alert("Successfully updated.");
+                        window.alert(data);
                       });
               });
       }
       /* IF INPUT URL IS IN ORIGINAL FORM */
       else {
         var userSchedule = getSchedule(inputURL);
-        $.get('updateEntryURL.php',
+        $.get('addEntryURL.php',
               {
                 person: name.val(),
                 address: inputURL,
                 schedule: userSchedule
               },
               function(data) {
-                window.alert("Successfully updated.");
+                window.alert(data);
               });
       }
       dialog.dialog("close");
@@ -305,29 +331,29 @@ $(document).ready(function() {
   /* BUTTON-CLICK HANDLER FOR COMMON DATE-TIME COMPUTATION */
   $("#compute").button().on("click", function() {
     $.get('computeDatesURL.php', function(data) {
-      window.alert("Times available:\n\n" + data);
+      window.alert("These are the times that all of you are available:\n\n" + data);
     });
   });
   /* ========== !UPLOAD.HTML USER FORM SCRIPTING ========== */
 })
 
 /* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
-/* INPUT VALIDATION FUNCTION */
+/* INPUT VALIDATION FUNCTIONS */
 function validate(inputName) {
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
-    window.alert("Input field is empty.");
+    window.alert("You have not filled in a name. Please fill in a name.");
     return false;
   }
   else if (sample.replace(/[a-zA-Z\s]/g,"").length > 0) {
-    window.alert("Input name should only contain a-z or A-Z. Please enter name again.");
+    window.alert("Your name should only contain a-z or A-Z. Please enter a proper name again.");
     return false;
   }
   else {
     for (var i = 0; i < keywords.length; i = i + 1) {
       if (sample.includes(keywords[i])) {
-        window.alert("Input name contains illegal keywords. Please enter name again.");
+        window.alert("Your name is invalid. Please enter a proper name again.");
         return false;
       }
     }

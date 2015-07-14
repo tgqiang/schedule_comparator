@@ -60,6 +60,7 @@ $(document).ready(function() {
     var validCreateSessionID = session_fields_validate($("#session_id_create").val());
     var method_selected = (document.getElementById('manual_option').checked) ||
                           (document.getElementById('url_option').checked);
+
     /* IF SESSION ID FOR CREATION IS VALID */
     if (validCreateSessionID && method_selected) {
       $("#session_create_form").dialog("close");
