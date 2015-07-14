@@ -1,6 +1,17 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 14/07/2015
+Changes/Notes:
+* Bug fixes to round 1 testing completed
+
+Required commits:
+* Testing round 2 (Daphne to do this)
+* To complete interface migration from MultiDatesPicker to DatePair (halfway done)
+* Polish up FAQ page and user interfaces after application is fully complete
+
+----
+
 # 09/07/2015
 Changes/Notes:
 * Upload implementations are fully complete
