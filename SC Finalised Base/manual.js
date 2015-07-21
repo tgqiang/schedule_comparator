@@ -3,6 +3,14 @@
  * CONTAINS THE SCRIPTING FOR MANUAL.PHP. PLEASE DO NOT MODIFY THIS FILE UNLESS
  * ERRORS/BUGS ARE DETECTED. ATTN: FURTHER TESTING IS NEEDED TO VERIFY INTEGRITY OF ALL
  * SCRIPTS WRITTEN.
+ *
+ * ADDED:
+ * 1. Input-appending function to append date-times to schedule input field
+ * 2. Adjusted pre-existing functions to incorporate date-time feature
+ * Interface works for now
+ * -> Need to process full string into date-time object
+ * -> JSON.stringify the object to send to PHP file for table recording
+ * -> Computation to process all users' date-time objects
  */
 
 /* SENSITIVE SQL KEYWORDS DEFINED HERE
@@ -23,6 +31,26 @@ var keywords =   ["select",
 
 /* VARIABLE FOR MANAGING AJAX REQUESTS */
 var xmlhttp = new XMLHttpRequest();
+
+// --- ADDED --- //
+/* SCHEDULE-INPUT-FIELD STACK ENVIRONMENT VARIABLE */
+var scheduleInputState = {
+  state: [],
+  reset_prev: function() {
+    if (this.state.length === 0) {
+      window.alert("Input field cannot be resetted any more.");
+    }
+    else {
+      this.state.pop();
+      if (this.state.length === 0) {
+        $("#schedule").val('');
+      }
+      else {
+        $("#schedule").val(this.state[this.state.length - 1]);
+      }
+    }
+  }
+};
 
 /* READY FUNCTIONS */
 $(document).ready(function() {
@@ -60,7 +88,6 @@ $(document).ready(function() {
   });
 
   // IF USER CONFIRMS LEAVING PAGE VIA 'X' BUTTON OF THE BROWSER
-  // CURRENTLY DOES NOT WORK IF USER CLICKS 'X' ON BROWSER TAB
   window.onunload = function() {
     window.sessionStorage.setItem("added", "false");
     $.ajax({
@@ -76,9 +103,123 @@ $(document).ready(function() {
   var dialog, form,
  
   name = $("#name"),
-  dates = $('#dates').multiDatesPicker({
+  date = $('#date').datepicker({ // --- CHANGED --- //
 	 dateFormat: "yy-mm-dd",
 	 minDate: 0,
+  }),
+  time_start = $('#time_start').timepicker({ // --- ADDED --- //
+    defaultTime: '',
+    timeSeparator: '.',
+    showLeadingZero: true,
+    onSelect: tpStartSelect,
+    maxTime: {
+      hour: 23, minute: 00
+    }
+  }),
+  time_end = $('#time_end').timepicker({ // --- ADDED --- //
+    defaultTime: '',
+    timeSeparator: '.',
+    showLeadingZero: true,
+    onSelect: tpEndSelect,
+    minTime: {
+      hour: 08, minute: 00
+    }
+  }),
+  schedule = $('#schedule'); // --- ADDED --- //
+
+  /* FOR TIMEPICKER */
+  // when start time change, update minimum for end timepicker
+  function tpStartSelect( time, endTimePickerInst ) {
+     $('#time_end').timepicker('option', {
+         minTime: {
+             hour: endTimePickerInst.hours,
+             minute: endTimePickerInst.minutes
+         }
+     });
+  }
+
+  /* FOR TIMEPICKER */
+  // when end time change, update maximum for start timepicker
+  function tpEndSelect( time, startTimePickerInst ) {
+     $('#time_start').timepicker('option', {
+         maxTime: {
+             hour: startTimePickerInst.hours,
+             minute: startTimePickerInst.minutes
+         }
+     });
+  }
+
+
+  /* FORM CONFIGURATIONS */
+  dialog = $("#dialog-form").dialog({
+    autoOpen: false,
+    height: 400,
+    width: 400,
+    modal: true,
+    buttons: {
+      "Add/modify your entry": submitUser,
+      Cancel: function() {
+        dialog.dialog("close");
+      }
+    },
+    close: function() {
+      dialog.dialog("close");
+    }
+  });
+  
+  /* FORM SUBMIT EVENT */
+  form = dialog.find("form").on("submit", function(event) {
+    event.preventDefault();
+  });
+  
+  /* BUTTON-CLICK HANDLER FOR USER TO APPEND DATE-TIME TO SCHEDULE INPUT FIELD */
+  // --- ADDED --- //
+  /* FUNCTION TO APPEND DATE-TIME TO SCHEDULE INPUT */
+  $("#append").click(function () {
+    if (isDateTimeFilled(date, time_start, time_end)) {
+      var value = schedule.val() + ($('#date').val() + " " + $('#time_start').val() + " to " + $('#time_end').val() + ",");
+      scheduleInputState.state.push(value);
+      schedule.val(value);
+    }
+  });
+
+  /* BUTTON-CLICK HANDLER FOR USER TO UNDO CHANGES TO SCHEDULE INPUT FIELD */
+  // --- ADDED --- //
+  $("#revert").click(function() {
+    scheduleInputState.reset_prev();
+  });
+
+  /* BUTTON-CLICK HANDLER WHEN USER INTENDS TO ADD/MODIFY HIS/HER OWN ENTRY */
+  $("#create-user, #edit-self").button().on("click", function() {
+    dialog.dialog("open");
+  });
+
+  /* BUTTON-CLICK HANDLER TO REFRESH TABLE THAT IS DISPLAYED */
+  $("#reset-table").button().on("click", function() {
+    $("tr#entry, td#entry").remove();
+    $("#users tbody").load('refreshTable.php', function(result) {
+      alert("Table is now updated.");
+    });
+  });
+  
+  /* BUTTON-CLICK HANDLER FOR COMMON DATE COMPUTATION:
+  -> ATTN: SHOULD WE STICK TO WINDOW.ALERT() OR SHOULD WE PRINT RESULT IN THE HTML?
+   */
+  $("#compute").button().on("click", function() {
+    $(document).load('testNewCompute.php', function(result) {
+      var count = JSON.parse(result).length;      
+      var parsedResult = _.reduce(JSON.parse(result),
+                                  function(a, b) {
+                                    return a.concat(b);
+                                  });
+      parsedResult.sort(DateTimeSort);
+      var combinedSchedule = _.groupBy(parsedResult,
+                                       function(obj) {
+                                         return obj.date;
+                                       }, 'date');
+      //console.log(combinedSchedule);
+      compute_Dates(combinedSchedule, count);
+    });
   });
 
   /* NAME VALIDATION FUNCTION:
@@ -87,41 +228,52 @@ $(document).ready(function() {
   -> NAME FIELD MUST ALSO NOT BE EMPTY
   */
   function name_Fill_Validate(inputName) {
-    if (inputName.val().length === 0) {
-      window.alert("Name not filled.");
-      return false;
-    } else {
-      return validate(inputName.val());
-    }
+    return validate(inputName.val());
   }
-  
-  /* DATE-FIELD VALIDATION FUNCTION:
-  -> ALLOWS DATE FIELD TO BE EMPTY (BUT QUITE POINTLESS FOR THE USERS THEMSELVES)
-  -> FURTHER DATE VALIDATION HAS BEEN HANDLED BY MULTIDATEPICKER
-     (I.E. ANY ATTEMPTS TO WRITE GIBBERISH IN THE FIELD HAS BEEN ACCOUNTED FOR,
-      EXCEPT THE ONLY CASE WHERE USERS CAN WRITE GIBBERISH OF DIGITS AND BACKSLASHES
-      BUT THIS DOES NOT CAUSE ANY COMPLICATIONS FOR APP FUNCTIONALITY)
+
+  // --- CHANGED --- //
+  /* DATE-TIME-FIELD VALIDATION FUNCTION:
+  -> USERS ARE UNABLE TO EDIT INPUT THESE INPUTS VIA TYPING IN THE INPUT FIELD
+  -> EMPTY INPUT IS STRICTLY NOT ACCEPTED
   */
-  function isDateFilled(inputDate) {
-    if (inputDate.val().length === 0) {
-      var proceed = window.confirm("You have not entered a date yet. Are you sure you want to proceed?");
-      return proceed;
+  function isDateTimeFilled(inputDate, inputStartTime, inputEndTime) {
+    if (inputDate.val().length === 0 ||
+        inputStartTime.val().length === 0 ||
+        inputEndTime.val().length === 0) {
+      window.alert("Please ensure that the date, start time and end time that you are available are filled before appending your entry.");
+      return false;
     } else {
       return true;
     }
   }
+
+  // --- ADDED --- //
+  /* SCHEDULE-FIELD VALIDATION FUNCTION:
+  -> USERS ARE UNABLE TO EDIT INPUT THESE INPUTS VIA TYPING IN THE INPUT FIELD
+  -> NEED TO DISPLAY WHOLE SCHEDULE TO USER TO DOUBLE-CHECK BEFORE SUBMISSION?
+  */
+  function isScheduleFilled(inputSchedule) {
+    if (inputSchedule.val().length === 0) {
+      window.alert("Please ensure that you have an available schedule before submitting this form.");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /* PREDEFINED FUNCTIONS FOR NON-GLOBAL USE */
  
-  /* FUNCTION TO ADD USER */
+  /* FUNCTION TO SUBMIT USER DATA TO PHP FILE */
   function addUser() {
-   /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
+   /* THIS IS TO ENSURE THE SCHEDULE AND THE NAME IS VALIDATED */
    var valid = name_Fill_Validate(name) &&
-                isDateFilled(dates);
-    
+                isScheduleFilled(schedule);
     if (valid) {
+        var json_str = JSON.stringify(dt_convert(schedule.val()).sort(DateTimeSort));
         $.get('addEntry.php',
               {
                 person: name.val(),
-                dates: dates.val(),
+                schedule: json_str,
                 added: true
               },
               function(data) {
@@ -144,17 +296,18 @@ $(document).ready(function() {
     }
   }
 
-  /* FUNCTION TO UPDATE USER'S OWN ENTRY */
+  /* FUNCTION TO UPDATE USER'S OWN ENTRY VIA PHP FILE */
   function updateUser() {
    /* THIS IS TO ENSURE THE DATE AND THE NAME IS VALIDATED */
    var valid = name_Fill_Validate(name) &&
-                isDateFilled(dates);
+                isScheduleFilled(schedule); // --- CHANGED --- // --> TO CHANGE PHP FILE TOO
     
     if (valid) {
+        var json_str = JSON.stringify(dt_convert(schedule.val()).sort(DateTimeSort));
         $.get('addEntry.php',
               {
                 person: name.val(),
-                dates: dates.val()
+                schedule: json_str // --- CHANGED --- // --> TO CHANGE PHP FILE TOO
               },
               function(data) {
                 window.alert(data);
@@ -177,86 +330,145 @@ $(document).ready(function() {
       addUser();
     }
   }
-
-  /* FORM CONFIGURATIONS */
-  dialog = $("#dialog-form").dialog({
-    autoOpen: false,
-    height: 300,
-    width: 350,
-    modal: true,
-    buttons: {
-      "Add/modify your entry": submitUser,
-      Cancel: function() {
-        dialog.dialog("close");
-      }
-    },
-    close: function() {
-      dialog.dialog("close");
-    }
-  });
-  
-  /* FORM SUBMIT EVENT */
-  form = dialog.find("form").on("submit", function(event) {
-    event.preventDefault();
-  });
-  
-  /* BUTTON-CLICK HANDLER WHEN USER INTENDS TO APPEND/MODIFY HIS/HER OWN ENTRY */
-  $("#create-user, #edit-self").button().on("click", function() {
-    dialog.dialog("open");
-  });
-
-  /* BUTTON-CLICK HANDLER TO REFRESH TABLE THAT IS DISPLAYED */
-  $("#reset-table").button().on("click", function() {
-    $("tr#entry, td#entry").remove();
-    $("#users tbody").load('refreshTable.php', function(result) {
-      alert("The table is updated.");
-    });
-  });
-  
-  /* BUTTON-CLICK HANDLER FOR COMMON DATE COMPUTATION:
-  -> ATTN: SHOULD WE STICK TO WINDOW.ALERT() OR SHOULD WE PRINT RESULT IN THE HTML?
-   */
-  $("#compute").button().on("click", function() {
-    $(document).load('computeDates.php', function(result) {
-      var tablesize = parseInt(result.substring(result.length - 1));
-      var arrayOfDates = result.substring(0, result.length - 1).split(", ").sort(datesort);
-      compute_Dates(arrayOfDates, tablesize);
-    });
-  });
   /* ========== !MANUAL.HTML USER FORM SCRIPTING ========== */
 })
 
-/* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
-/* COMPUTATION FUNCTION (USING ARRAY-POINTER SLIDER METHOD) */
-function compute_Dates(dateArray, totalUsers) {
-  var count = 1;
-  var result = "";
 
-  for (var i = 0; i < dateArray.length; i = i + 1) {
-    if (dateArray[i] === dateArray[i + 1]) {
-      count = count + 1;
-    }
-    else {
-      if (count === totalUsers) {
-        result = result + ("[" + dateArray[i] + "] ");
-      }
-      count = 1;
+// --- TO CHANGE! --- //
+/*
+ * WORK IN PROGRESS
+ */
+/* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
+/* COMPUTATION FUNCTION */
+function compute_Dates(schedule_object, totalUsers) {
+  var common = [];
+  var keys = _.keys(schedule_object);
+
+  for (var i = 0; i < keys.length; i = i + 1) {
+    if (schedule_object[keys[i]].length === totalUsers) {
+      common.push(schedule_object[keys[i]]);
     }
   }
 
-  if (result === "") {
-    window.alert("There is no common date where all of you are available. Please try to reach a compromise then try again.");
+  if (common.length === 0) {
+    console.log("There is no common date where all of you are available. Please try to reach a compromise then try again.");
   }
   else {
-    window.alert("There are date(s) that all of you can meet up and they are: " + result.trim());
+    //console.log("There are dates that all of you can meet up: " /*+ result.trim()*/);
+    console.log(common);
+    var res = compute_Times(common);
+    console.log(res);
    }
 }
 
-/* DATE-COMPARATOR OBJECT (IN JAVASCRIPT) */
-function datesort(date1, date2) {
-  var a = new Date(date1);
-  var b = new Date(date2);
+// FUNCTION TO TRIGGER WHEN COMMON DATE IS FOUND
+function compute_Times(obj_arr) {
+  var result = [];
+
+  for (var i = 0; i < obj_arr.length; i++) {
+    var ref_range = makeRange(obj_arr[i][0]);
+
+    for (var j = 0; j < obj_arr[i].length; j++) {
+      var current_range = makeRange(obj_arr[i][j]);
+      ref_range = findIntersect(ref_range, current_range);
+    }
+
+    if (ref_range.length !== 0) {
+      result.push([obj_arr[i][0].date, convertResult(ref_range)]);
+    }
+  }
+  
+  var string_result = '';
+  for (var j = 0; j < result.length; j++) {
+    string_result += (result[j][0] + ": " + result[j][1] + "\n");
+  }
+  return string_result;
+}
+
+// CONVERT TIME RANGE INTO USER-READABLE FORMAT
+function convertResult(res_arr) {
+  var res_str = '';
+  for (var i = 0; i < res_arr.length; i++) {
+    res_str += (res_arr[i].start._d.toString().substr(16,5) + " to "
+                + res_arr[i].end._d.toString().substr(16,5) + ", ");
+  }
+  return res_str.substr(0, res_str.length - 2);
+}
+
+
+// TO CONVERT ARRAY OF TIMES INTO TIME RANGES
+function makeRange(dt_obj) {
+    var result = [];
+    var date_args = dt_obj.date.split('-');
+    
+    for (var i = 0; i < dt_obj.times.length; i++) {
+      var time_start_hr = parseInt(dt_obj.times[i].substr(0, 2));
+      var time_start_min = parseInt(dt_obj.times[i].substr(3, 2));
+      var time_end_hr = parseInt(dt_obj.times[i].substr(6, 2));
+      var time_end_min = parseInt(dt_obj.times[i].substr(9, 2));
+      var range = moment.range(new Date(date_args[0],
+                                        date_args[1] - 1,
+                                        date_args[2],
+                                        time_start_hr,
+                                        time_start_min),
+                               new Date(date_args[0],
+                                        date_args[1] - 1,
+                                        date_args[2],
+                                        time_end_hr,
+                                        time_end_min));
+      result.push(range);
+    }
+    
+    return result;
+}
+
+// FUNCTION TO FIND INTERSECTING TIME RANGE
+function findIntersect(range_arr1, range_arr2) {
+  var result = [];
+  for (var i = 0; i < range_arr1.length; i++) {
+    for (var j = 0; j < range_arr2.length; j++) {
+      if (range_arr1[i].intersect(range_arr2[j]) !== null) {
+        result.push(range_arr1[i].intersect(range_arr2[j]));
+      }
+    }
+  }
+  console.log(result);
+  return result;
+}
+
+/* DATE COMPARATOR OBJECT (IN JAVASCRIPT) */
+function dateSort(obj1, obj2) {
+  var a_args = obj1.date.split('-');
+  var b_args = obj2.date.split('-');
+  var a = new Date(parseInt(a_args[0]),
+                   parseInt(a_args[1]) - 1,
+                   parseInt(a_args[2]));
+  var b = new Date(parseInt(b_args[0]),
+                   parseInt(b_args[1]) - 1,
+                   parseInt(b_args[2]));
   return a - b;
+}
+
+/* TIME COMPARATOR OBJECT (IN JAVASCRIPT) */
+function timeSort(a, b) {
+    var a_hr_start = parseInt(a.substr(0, 2));
+    var b_hr_start = parseInt(b.substr(0, 2));
+    var a_min_start = parseInt(a.substr(3, 2));
+    var b_min_start = parseInt(b.substr(3, 2));
+    
+    if (a_hr_start === b_hr_start) {
+        return a_min_start - b_min_start;
+    }
+    else {
+        return a_hr_start - b_hr_start;
+    }
+}
+
+/* DATE-TIME COMPARATOR OBJECT (IN JAVASCRIPT) */
+function DateTimeSort(dt1, dt2) {
+    dt1.times = dt1.times.sort(timeSort);
+    dt2.times = dt2.times.sort(timeSort);
+    return dateSort(dt1, dt2);
 }
 
 /* INPUT VALIDATION FUNCTION */
@@ -264,7 +476,7 @@ function validate(inputName) {
   var sample = inputName.toLowerCase();
 
   if (sample.length === 0) {
-    window.alert("You have not filled in a name. Please fill in a name.");
+    window.alert("You have not filled in your name. Please enter a name.");
     return false;
   }
   else if (sample.replace(/[a-zA-Z\s]/g,"").length > 0) {
@@ -282,8 +494,38 @@ function validate(inputName) {
   }
 }
 
-/* DATEPICKER CLOSING FUNCTION */
-function closeDatePicker() {
-  $('#dates').multiDatesPicker('hide');
+function dt_convert(dtstr) {
+  dtstr = dtstr.substr(0, dtstr.length - 1);
+  var dt_array = dtstr.split(',').sort();
+  var userSchedule = [];
+  var index = -1;
+
+  for (var i = 0; i < dt_array.length; i++) {
+    // temp = [date, startTime, 'to', endTime]
+    var temp = dt_array[i].split(' ');
+    // starting phase when userSchedule is empty
+    if (userSchedule[index] === undefined) {
+      userSchedule.push({
+        date: temp[0],
+        times: [(temp[1] + ' ' + temp[3])]
+      });
+      index += 1;
+    }
+    // if next element in dt_array has same date as object pointed to in userSchedule
+    else if (userSchedule[index].date === temp[0]) {
+      userSchedule[index].times.push((temp[1] + ' ' + temp[3]));
+    }
+    // if next element has a different date
+    else {
+      userSchedule.push({
+        date: temp[0],
+        times: [(temp[1] + ' ' + temp[3])]
+      });
+      index += 1;
+    }
+  }
+
+  return userSchedule;
 }
+
 /* ========== !PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */

@@ -24,19 +24,26 @@
 
   /* IF USER EXITS PROGRAM */
   if (isset($_GET['exit'])) {
-    include_once 'windowClose.php';
+    if (isset($_SESSION['create'])) {
+      $mysqli->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
+      $mysqli->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");
+    }
+    $mysqli->close();
+    session_unset();
+    session_destroy();
+    header("Location: ScheduleComparator.html");
   }
 
   /* CREATE */
   function createSession($db) {
-    echo $_SESSION['create'];
+    echo "User is CREATING session.";
     /* SQL QUERY TO CREATE TABLE */
     $result = $db->query("CREATE TABLE " . $_SESSION['sessionID'] . " (person VARCHAR(30) NOT NULL, dates VARCHAR(8000));");
   }
 
   /* JOIN (EFFECTIVELY DOES NOTHING, CAN PLACE CHECKING FUNCTIONS HERE FOR TESTING) */
   function joinSession($db) {
-    echo $_SESSION['join'];
+    echo "User is JOINING session.";
   }
 
   if (isset($_SESSION['create'])) {
@@ -56,9 +63,13 @@
     <link type="text/css" rel="stylesheet" href="bootstrap.css">
     <link type="text/css" rel="stylesheet" href="jquery-ui.css">
     <link type="text/css" rel="stylesheet" href="base.css">
+    <link type="text/css" rel="stylesheet" href="jquery.ui.timepicker.css">
+    <script type="text/javascript" src="underscore-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/2.0.2/moment-range.min.js"></script>
     <script src="jquery.js"></script>
     <script src="jquery-ui.js"></script>
-    <script src="jquery-ui.multidatespicker.js"></script>
+    <script src="jquery.ui.timepicker.js"></script>
     <script type="text/javascript" src="manual.js"></script>
     <title>Schedule Comparator</title>
   </head>
@@ -100,8 +111,25 @@
             <fieldset>
               <label for="name">Name</label>
               <input type="text" name="user_name" id="name" class="text ui-widget-content ui-corner-all">
-              <label for="dates">Dates available</label>
-              <input type="text" name="input_dates" id="dates" class="text ui-widget-content ui-corner-all" onblur="closeDatePicker()" multiple>
+              <br>
+              <label for="date">Date available</label>
+              <input type="text" name="input_dates" id="date" class="text ui-widget-content ui-corner-all" readonly>
+              <br>
+              <label for="times">Times available</label>
+              <br>
+              <label>From: </label>
+              <input type="text" name="input_times" id="time_start" class="text ui-widget-content ui-corner-all" readonly>
+              <br>
+              <label>to: </label>
+              <input type="text" name="input_times" id="time_end" class="text ui-widget-content ui-corner-all" readonly>
+              <br>
+              <br>
+              <button id="append">Append date-time to schedule</button>
+              <button id="revert">Undo</button>
+              <br>
+              <br>
+              <label for="schedule">Schedule</label>
+              <input type="text" name="input_schedule" id="schedule" class="text ui-widget-content ui-corner-all" readonly>
  
               <!-- Allow form submission with keyboard without duplicating the dialog button -->
               <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">

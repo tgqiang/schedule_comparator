@@ -15,13 +15,15 @@ if ($nameUsed->num_rows !== 0  && !isset($_SESSION['added'])) {
 	echo "Name has been used by someone else in this session. Please enter in another name.";
 }
 else if (isset($_SESSION['added'])) {
-	$result = $db->query("UPDATE " . $_SESSION['sessionID'] . " SET dates='" . $_GET['dates'] . "' WHERE person='" . $_GET['person'] . "';");
+	$result = $db->query("UPDATE " . $_SESSION['sessionID'] . " SET dates='" . $_GET['schedule'] . "' WHERE person='" . $_GET['person'] . "';");
 	echo "Your entry has been successfully updated.";
+	//echo $_GET['schedule'];
 }
 else {
 	$_SESSION['added'] = $_GET['added'];
-	$result = $db->query("INSERT INTO " . $_SESSION['sessionID'] . " VALUES ('" . $_GET['person'] . "', '" . $_GET['dates'] . "')");
+	$result = $db->query("INSERT INTO " . $_SESSION['sessionID'] . " VALUES ('" . $_GET['person'] . "', '" . $_GET['schedule'] . "')");
 	echo "Your entry has been successfully added.";
+	//echo $_GET['schedule'];
 }
 
 $db->close();

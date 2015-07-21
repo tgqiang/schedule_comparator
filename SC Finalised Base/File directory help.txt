@@ -84,16 +84,12 @@
    | => [Manual] (Potential issue: would table be dropped when
    |              any one of the joining members leaves?)
    |
-   | - addEntry.php
+   | - addEntry.php (updateEntry.php fused with addEntry.php)
    | :PHP file to execute entry-adding to table in database for manual.php
    | :Does not contain HTML
    |
    | - computeDates.php
    | :PHP file to execute dates-fetching for common dates computation
-   | :Does not contain HTML
-   |
-   | - updateEntry.php
-   | :PHP file to execute entry update for user
    | :Does not contain HTML
    |
    | - refreshTable.php
@@ -117,16 +113,12 @@
    | => [Upload] (Potential issue: would table be dropped when
    |              any one of the joining members leaves?)
    |
-   | - addEntryURL.php
+   | - addEntryURL.php (updateEntryURL.php fused with addEntryURL.php)
    | :PHP file to execute entry-adding to table in database for manual.php
    | :Does not contain HTML
    |
    | - computeDatesURL.php
    | :PHP file to execute dates-fetching for common dates computation
-   | :Does not contain HTML
-   |
-   | - updateEntryURL.php
-   | :PHP file to execute entry update for user
    | :Does not contain HTML
    |
    | - redirectURL.php
@@ -147,17 +139,4 @@
    | - windowClose.php (common with Manual option)
    | :PHP file to handle exception when user exits by unintended method
    | :Does not contain HTML
-   |
-   | - testupload.js
-   | :Backup copy for upload option scripting
-   | :Recommended to remove once product is absolutely finalised
-   |
    ==============================================================
-=================================================================
-[Others] (This is for experimental use)
-
-- test.php
-:PHP file to do PHP code experimentation
-:Recommended to remove once product is absolutely finalised
-
-=================================================================
