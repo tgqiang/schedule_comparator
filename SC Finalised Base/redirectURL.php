@@ -26,5 +26,6 @@ $redirectedUrl = getRedirectUrl($timetableUrl);
 if (!$redirectedUrl) {
   $redirectedUrl = $timetableUrl;
 }
+
 echo json_encode($redirectedUrl);
 ?>

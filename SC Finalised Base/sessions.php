@@ -1,17 +1,13 @@
 <!--
   * // SESSIONS.PHP //
   * PAGE FOR SESSION CREATION
-  * ATTN: FURTHER TESTING IS NEEDED TO ENSURE INTEGRITY OF APPLICATION FUNCTIONALITY
-  * IN-DEPTH TESTING AS A CREATOR OR JOINER MORE CONVENIENTLY DONE AFTER APP IS
-  * DEPLOYED, IF NOT DIFFERENT BROWSERS HAVE TO BE USED. NEED TO TEST WHETHER IT WORKS
-  * ACROSS MOST BROWSERS.
 -->
 <?php
   /* START BROWSER SESSION */
   session_start();
 
   /* CREATE CONNECTION */
-  $mysqli = new mysqli('localhost', 'root', '', 'schedulecomparator');
+  $mysqli = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
   
   /* CHECKS CONNECTION */
   if ($mysqli->connect_errno) {
@@ -49,8 +45,9 @@
   
   /* IF-ELSE STATEMENT FOR USER REDIRECTION FOR SESSION-JOINERS */
   else if (isset($_GET['id_join']) && isset($_GET['join_submit'])) {
-    $invalidID = $mysqli->query("DESCRIBE " . $_SESSION['sessionID']);
-    if ($invalidID !== FALSE) {
+    /* TEST QUERY TO CHECK IF SESSION ID EXISTS */
+    $invalidID = $mysqli->query("SELECT id FROM sessionoptions" . " WHERE id='" . $_GET['id_join'] . "' LIMIT 1");
+    if ($invalidID->num_rows !== 0) {
       $_SESSION['sessionID'] = $_GET['id_join'];
       $_SESSION['join'] = true;
       $table = $mysqli->query("SELECT method FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "'");

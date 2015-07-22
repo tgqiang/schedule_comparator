@@ -1,14 +1,13 @@
 <!--
   * // UPLOAD.PHP //
-  * PAGE FOR UPLOAD COMPARISON OPTION. ATTN: FURTHER TESTING NEEDED TO VERIFY
-  * INTEGRITY OF APP FUNCTIONALITY.
+  * PAGE FOR UPLOAD COMPARISON OPTION.
 -->
 <?php
   /* START BROWSER SESSION */
   session_start();
   
   /* CREATE CONNECTION */
-  $mysqli = new mysqli('localhost', 'root', '', 'schedulecomparator');
+  $mysqli = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
   
   /* CHECKS CONNECTION */
   if ($mysqli->connect_errno) {
@@ -113,7 +112,7 @@
           <h3>Options:
             <button id="create-user">Add your entry</button>
             <button id="edit-self">Modify your entry</button>
-            <button id="reset-table">Update table</button>
+            <button id="reset-table">Update users</button>
             <button id="compute">Compute dates</button>
           </h3>
           <table id="users" class="ui-widget ui-widget-content">

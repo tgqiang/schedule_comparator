@@ -5,17 +5,25 @@
  * BROWSER INSTEAD OF USING THE RECOMMENDED METHOD.
  */
 
+/* STARTS SESSION */
 session_start();
-$db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 
+/* ESTABLISHES CONNECTION */
+$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+
+/* CHECKS IF USER IS A SESSION-CREATOR OR A JOINER */
 if (isset($_SESSION['create'])) {
 	$db->query("DROP TABLE " . $_SESSION['sessionID'] . ";");
 	$db->query("DELETE FROM sessionoptions WHERE id='" . $_SESSION['sessionID'] . "';");
 }
 
+/* CLOSES RESULT SET */
 $db->close();
+
+/* DESTROYS ANY STORED SESSION VARIABLES IN PHP */
 session_unset();
 session_destroy();
 
+/* REDIRECTION TO HOME PAGE */
 header("Location: ScheduleComparator.html");
 ?>

@@ -6,9 +6,13 @@
  * MANUAL.PHP PAGE.
  */
 
+/* START SESSION */
 session_start();
-$db = new mysqli('localhost', 'root', '', 'schedulecomparator');
 
+/* ESTABLISH CONNECTION */
+$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+
+/* SELECTS THE ENTIRE TABLE FOR DISPLAY TO HTML/PHP PAGE */
 $table = $db->query("SELECT * FROM " . $_SESSION['sessionID'] . " WHERE 1;");
 
 $result = '';
@@ -20,6 +24,9 @@ while ($row = $table->fetch_row()) {
 	$result .= "</tr>";
 }
 
+/* CLOSE RESULT SET WHEN DONE */
 $db->close();
+
+/* RETURNS TABLE IN HTML FORMAT */
 echo $result;
 ?>

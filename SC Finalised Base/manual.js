@@ -1,16 +1,6 @@
 /* 
  * MANUAL.JS FOR MANUAL.PHP //
- * CONTAINS THE SCRIPTING FOR MANUAL.PHP. PLEASE DO NOT MODIFY THIS FILE UNLESS
- * ERRORS/BUGS ARE DETECTED. ATTN: FURTHER TESTING IS NEEDED TO VERIFY INTEGRITY OF ALL
- * SCRIPTS WRITTEN.
- *
- * ADDED:
- * 1. Input-appending function to append date-times to schedule input field
- * 2. Adjusted pre-existing functions to incorporate date-time feature
- * Interface works for now
- * -> Need to process full string into date-time object
- * -> JSON.stringify the object to send to PHP file for table recording
- * -> Computation to process all users' date-time objects
+ * CONTAINS THE SCRIPTING FOR MANUAL.PHP.
  */
 
 /* SENSITIVE SQL KEYWORDS DEFINED HERE
@@ -32,7 +22,6 @@ var keywords =   ["select",
 /* VARIABLE FOR MANAGING AJAX REQUESTS */
 var xmlhttp = new XMLHttpRequest();
 
-// --- ADDED --- //
 /* SCHEDULE-INPUT-FIELD STACK ENVIRONMENT VARIABLE */
 var scheduleInputState = {
   state: [],
@@ -103,11 +92,11 @@ $(document).ready(function() {
   var dialog, form,
  
   name = $("#name"),
-  date = $('#date').datepicker({ // --- CHANGED --- //
+  date = $('#date').datepicker({
 	 dateFormat: "yy-mm-dd",
 	 minDate: 0,
   }),
-  time_start = $('#time_start').timepicker({ // --- ADDED --- //
+  time_start = $('#time_start').timepicker({
     defaultTime: '',
     timeSeparator: '.',
     showLeadingZero: true,
@@ -116,7 +105,7 @@ $(document).ready(function() {
       hour: 23, minute: 00
     }
   }),
-  time_end = $('#time_end').timepicker({ // --- ADDED --- //
+  time_end = $('#time_end').timepicker({
     defaultTime: '',
     timeSeparator: '.',
     showLeadingZero: true,
@@ -125,7 +114,7 @@ $(document).ready(function() {
       hour: 08, minute: 00
     }
   }),
-  schedule = $('#schedule'); // --- ADDED --- //
+  schedule = $('#schedule');
 
   /* FOR TIMEPICKER */
   // when start time change, update minimum for end timepicker
@@ -173,8 +162,6 @@ $(document).ready(function() {
   });
   
   /* BUTTON-CLICK HANDLER FOR USER TO APPEND DATE-TIME TO SCHEDULE INPUT FIELD */
-  // --- ADDED --- //
-  /* FUNCTION TO APPEND DATE-TIME TO SCHEDULE INPUT */
   $("#append").click(function () {
     if (isDateTimeFilled(date, time_start, time_end)) {
       var value = schedule.val() + ($('#date').val() + " " + $('#time_start').val() + " to " + $('#time_end').val() + ",");
@@ -184,7 +171,6 @@ $(document).ready(function() {
   });
 
   /* BUTTON-CLICK HANDLER FOR USER TO UNDO CHANGES TO SCHEDULE INPUT FIELD */
-  // --- ADDED --- //
   $("#revert").click(function() {
     scheduleInputState.reset_prev();
   });
@@ -202,11 +188,9 @@ $(document).ready(function() {
     });
   });
   
-  /* BUTTON-CLICK HANDLER FOR COMMON DATE COMPUTATION:
-  -> ATTN: SHOULD WE STICK TO WINDOW.ALERT() OR SHOULD WE PRINT RESULT IN THE HTML?
-   */
+  /* BUTTON-CLICK HANDLER FOR COMMON DATE COMPUTATION */
   $("#compute").button().on("click", function() {
-    $(document).load('testNewCompute.php', function(result) {
+    $(document).load('computeDates.php', function(result) {
       var count = JSON.parse(result).length;      
       var parsedResult = _.reduce(JSON.parse(result),
                                   function(a, b) {
@@ -217,7 +201,6 @@ $(document).ready(function() {
                                        function(obj) {
                                          return obj.date;
                                        }, 'date');
-      //console.log(combinedSchedule);
       compute_Dates(combinedSchedule, count);
     });
   });
@@ -231,7 +214,6 @@ $(document).ready(function() {
     return validate(inputName.val());
   }
 
-  // --- CHANGED --- //
   /* DATE-TIME-FIELD VALIDATION FUNCTION:
   -> USERS ARE UNABLE TO EDIT INPUT THESE INPUTS VIA TYPING IN THE INPUT FIELD
   -> EMPTY INPUT IS STRICTLY NOT ACCEPTED
@@ -247,7 +229,6 @@ $(document).ready(function() {
     }
   }
 
-  // --- ADDED --- //
   /* SCHEDULE-FIELD VALIDATION FUNCTION:
   -> USERS ARE UNABLE TO EDIT INPUT THESE INPUTS VIA TYPING IN THE INPUT FIELD
   -> NEED TO DISPLAY WHOLE SCHEDULE TO USER TO DOUBLE-CHECK BEFORE SUBMISSION?
@@ -333,11 +314,6 @@ $(document).ready(function() {
   /* ========== !MANUAL.HTML USER FORM SCRIPTING ========== */
 })
 
-
-// --- TO CHANGE! --- //
-/*
- * WORK IN PROGRESS
- */
 /* ========== PREDEFINED FUNCTIONS FOR MANUAL.HTML USER FORM USAGE ========== */
 /* COMPUTATION FUNCTION */
 function compute_Dates(schedule_object, totalUsers) {
@@ -354,10 +330,9 @@ function compute_Dates(schedule_object, totalUsers) {
     console.log("There is no common date where all of you are available. Please try to reach a compromise then try again.");
   }
   else {
-    //console.log("There are dates that all of you can meet up: " /*+ result.trim()*/);
-    console.log(common);
     var res = compute_Times(common);
-    console.log(res);
+    res = "There are dates that all of you can meet up:/n" + res;
+    window.alert(res);
    }
 }
 

@@ -2,22 +2,26 @@
 /* 
  * // COMPUTEDATES.PHP FOR MANUAL.PHP //
  * THIS PHP PROGRAM SENDS A QUERY TO SCHEDULECOMPARATOR DATABASE TO RETRIEVE ALL
- * EXISTING USERS' STRING OF DATES, APPEND THEM ALL TOGETHER, AND RETURNS A RESULT
- * CONSISTING OF THE FULL STRING OF DATES AND SESSION SIZE
- * => "[DATE_STRING][SESSION_SIZE]"
+ * EXISTING USERS' DATE-TIME ENTRIES
  */
 
+/* START SESSION */
 session_start();
-$db = new mysqli('localhost', 'root', '', 'schedulecomparator');
+
+/* ESTABLISH CONNECTION */
+$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
 
 $table = $db->query("SELECT dates FROM " . $_SESSION['sessionID'] . " WHERE 1;");
 $count = $table->num_rows;
-$result = '';
+$result = array();
 
 while ($row = $table->fetch_row()) {
-	$result .= $row[0] . ", ";
+	array_push($result, json_decode($row[0]));
 }
 
+/* CLOSE RESULT SET WHEN DONE */
 $db->close();
-echo substr($result, 0, -2) . $count;
+
+/* RETURN RESULT IN JSON-ENCODED FORMAT */
+echo json_encode($result);
 ?>

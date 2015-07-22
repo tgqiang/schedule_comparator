@@ -11,7 +11,7 @@
  */
 
 session_start();
-$db = new mysqli('localhost', 'root', '', 'schedulecomparator');
+$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
 
 $table = $db->query("SELECT indexstr FROM " . $_SESSION['sessionID'] . " WHERE 1;");
 
