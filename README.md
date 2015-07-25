@@ -1,6 +1,8 @@
 # schedule_comparator
 Team Rocket's project for Orbital
 
+For developer's reference: refer to patchNotesREADME for change log
+
 # README
 **Overview:**
 * Our project is to come up with a schedule comparison web application that helps groups of people to compare schedules and find out a common time available for a meet-up. We plan to have both the manual entry and the timetable-comparison option in our web application.
@@ -81,6 +83,7 @@ We are currently in the phase of refining the user interface of our application,
 We are aiming for the Gemini level of achievement for our project. We propose why we should be granted the Gemini level of achievement below:
 
 We have used different platforms as listed below:
+
 1.	We use a WAMP stack architecture for our Schedule Comparator instead of using GAE
 2.	We use multiple Javascript components for our web application (i.e. PHP, Ajax, jQuery)
 3.	Our sessions system serve as an administrative front end for our Schedule Comparator
