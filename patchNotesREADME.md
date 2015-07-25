@@ -1,6 +1,16 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 25/07/2015
+Changes/Notes:
+* App is now deployed, currently have not found any more bugs after first few rounds of debugging.
+* UI and tutorial in midst of change
+
+Required commits:
+* UI and tutorial changes (work in progress)
+
+----
+
 # 14/07/2015
 Changes/Notes:
 * Bug fixes to round 1 testing completed
