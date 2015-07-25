@@ -5,7 +5,8 @@ For developer's reference: refer to patchNotesREADME for change log
 
 # README
 **Overview:**
-* Our project is to come up with a schedule comparison web application that helps groups of people to compare schedules and find out a common time available for a meet-up. We plan to have both the manual entry and the timetable-comparison option in our web application.
+
+Our project is to come up with a schedule comparison web application that helps groups of people to compare schedules and find out a common time available for a meet-up. We plan to have both the manual entry and the timetable-comparison option in our web application.
 
 **Intended features:**
 *	Temporary sessions created using MySQL database with PHP, where groups of users can come together to collate the availability schedules of each person without requiring logins
@@ -77,9 +78,11 @@ Elaboration about our application:
   -	There exists a third scenario whereby the creator leaves the session ahead of those members who joined the session, thus causing the session to be destroyed even before those members can respond. In this case, we currently rely on users to communicate with each other on this aspect. Since we do not have a true login system, determining the state when the session should be terminated is difficult. One solution would be to implement a chat system in the application but we are currently running out of time. Therefore, we will implement this in the future, after Orbital.
 
 **Planned features after current milestone:**
+
 We are currently in the phase of refining the user interface of our application, after receiving feedbacks about our application’s poor interface.
 
 **Proposed level of achievement:**
+
 We are aiming for the Gemini level of achievement for our project. We propose why we should be granted the Gemini level of achievement below:
 
 We have used different platforms as listed below:
@@ -94,6 +97,7 @@ We have used different platforms as listed below:
 We are also active in our application development and our application is more or less ready.
 
 **References used:**
+
 _For self-learning:_
 *	W3Schools (http://www.w3schools.com/) – things for web development can be learnt here
 
