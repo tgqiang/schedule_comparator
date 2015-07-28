@@ -14,44 +14,6 @@ $(document).ready(function() {
   $("#show_create, #show_join, #show_manual, #show_upload").hide();
 
   /* ========== HELP DIALOG SCRIPTING ========== */
-  
-  $("#show_create").dialog({
-    title: 'How to create a session',
-    width: 500,
-    height: 500,
-    autoOpen: false,
-    show: {
-      effect: "blind",
-      duration: 500
-    },
-    hide: {
-      effect: "blind",
-      duration: 500
-    }
-  });
-
-  $("#create").click(function() {
-    $("#show_create").dialog("open");
-  });
-  
-  $("#show_join").dialog({
-    title: 'How to join a session',
-    width: 500,
-    height: 500,
-    autoOpen: false,
-    show: {
-      effect: "blind",
-      duration: 500
-    },
-    hide: {
-      effect: "blind",
-      duration: 500
-    }
-  });
-
-  $("#join").click(function() {
-    $("#show_join").dialog("open");
-  });
 
   $("#show_manual").dialog({
     title: 'Using the manual comparison option',
@@ -69,6 +31,7 @@ $(document).ready(function() {
   });
 
   $("#manual").click(function() {
+    $("#show_upload").dialog("close");
     $("#show_manual").dialog("open");
   });
 
@@ -88,6 +51,7 @@ $(document).ready(function() {
   });
 
   $("#upload").click(function() {
+    $("#show_manual").dialog("close");
     $("#show_upload").dialog("open");
   });
 
