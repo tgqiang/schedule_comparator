@@ -1,10 +1,23 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 28/07/2015
+Changes/Notes:
+* Tutorial page simplified to pic-torials.
+* UI modifications, work in progress
+* Product tour using Hopscotch JS library to be implemented, work in progress
+
+Required commits:
+* UI modifications (work in progress)
+* Hopscotch product tour (work in progress)
+
+----
+
 # 25/07/2015
 Changes/Notes:
 * App is now deployed, currently have not found any more bugs after first few rounds of debugging.
 * UI and tutorial in midst of change
+* Server used for our application is unstable, looking for better server.
 
 Required commits:
 * UI and tutorial changes (work in progress)
