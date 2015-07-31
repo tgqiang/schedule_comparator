@@ -11,3 +11,13 @@ $(document).ready(function() {
     active: false
   });
 })
+
+if(typeof(localStorage.$tart) === undefined) {
+    localStorage.$tart = 0;
+}
+
+if(localStorage.$tart == 0) {
+    localStorage.setItem("flagT", 0);
+    localStorage.setItem("flagT2", 0);
+    localStorage.$tart = 1;
+}

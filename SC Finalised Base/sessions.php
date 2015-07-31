@@ -80,6 +80,7 @@
     <link type="text/css" rel="stylesheet" href="bootstrap.css">
     <link type="text/css" rel="stylesheet" href="jquery-ui.css">
     <link type="text/css" rel="stylesheet" href="base.css">
+	<link rel="stylesheet" href="hopscotch.css"></link>
     <script src="jquery.js"></script>
     <script src="jquery-ui.js"></script>
     <script src="jquery-ui.multidatespicker.js"></script>
@@ -88,6 +89,7 @@
   </head>
 
   <body>
+	<div class ="logo"></div>
     <div class="nav">
       <div class="container">
         <ul class="pull-left">
@@ -115,7 +117,6 @@
         </ul>
       </div>
     </div>
-
     <div id="session-page" class="jumbotron">
       <div id="center" class="container">
         <!-- SESSIONS OPTIONS HANDLER HERE -->
@@ -126,10 +127,9 @@
         <!-- SESSION CREATE FORM HERE, IN POP-UP DIALOG -->
         <form title="Create session" id="session_create_form" action="sessions.php" method="get">
           <fieldset>
-            <label><u>Create session</u></label>
             <label for="session_name">Session ID:</label>
             <input type="text" name="id_create" id="session_id_create" class="text ui-widget-content ui-corner-all" readonly>
-            <button onclick="generateID()">Generate ID</button>
+            <button onclick="generateID()" id="generate">Generate ID</button>
             <br>
             <label for="create_option">Type of comparison to use:</label>
             <br>
@@ -145,7 +145,6 @@
         <!-- SESSION JOIN FORM HERE, IN POP-UP DIALOG -->
         <form title="Join session" id="session_join_form" action="sessions.php" method="get">
           <fieldset>
-            <label><u>Join session</u></label>
             <label for="session_name">Enter session ID:</label>
             <input type="text" name="id_join" id="session_id_join" class="text ui-widget-content ui-corner-all">
             <br>
@@ -154,6 +153,7 @@
           </fieldset>
         </form>
     </div>
-
+	  <script src="hopscotch.js"></script>
+      <script src="tutorial2.js"></script> <!-- define and start your tour in this file -->
   </body>
 </html>
