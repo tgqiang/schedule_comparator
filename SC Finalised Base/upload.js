@@ -49,7 +49,7 @@ $.getJSON('http://api.nusmods.com/2015-2016/1/modules.json',
 $(document).ready(function() {
   /* ================= PAGE READY HANDLER ================= */
   // ACCORDION EFFECT FOR USEFUL LINKS
-	$(".accordion").accordion({
+  $(".accordion").accordion({
     collapsible: true,
     active: false
   });
@@ -65,7 +65,7 @@ $(document).ready(function() {
 
   /* ================= PAGE READY HANDLER ================= */
 
-	/* =============== 'X' BUTTON EXIT HANDLER =============== */
+  /* =============== 'X' BUTTON EXIT HANDLER =============== */
   // IF USER CLICKS 'X' BUTTON OF THE BROWSER
   window.addEventListener("beforeunload", function(event) {
     event.returnValue = "It is STRONGLY recommended that you leave this page by exiting the session via the button present in this page instead."; 
@@ -108,13 +108,9 @@ $(document).ready(function() {
      (STRICTLY URL FORMAT, NO OTHER SOURCES/FORMATS ACCEPTABLE)
   */
   function url_Fill_Validate(urlstr) {
-    /* TEST FOR URL IN THE FORM OF 'HTTP://MODSN.US/...' */
-    var test1 = urlstr.substr(0, 16) === 'http://modsn.us/' &&
-                urlstr.substr(16).replace(/\w|[\=\[\]\&\?\/\.\:\-]/gi, '').length === 0;
-
     /* TEST FOR URL IN THE FORM OF 'HTTP://NUSMODS.COM/TIMETABLE/...' */
-    var test2 = urlstr.substr(0, 30) === 'https://nusmods.com/timetable/' &&
-                urlstr.substr(30).replace(/\w|[\=\[\]\&\?\/\.\:\-]/gi, '').length === 0;
+    var test = urlstr.substr(0, 30) === 'https://nusmods.com/timetable/' &&
+               urlstr.substr(30).replace(/\w|[\=\[\]\&\?\/\.\:\-]/gi, '').length === 0;
 
     /* THIS ARRAY OF KEYWORDS DIFFER ONLY BY 'TABLE' WORD FROM THE ARRAY OF KEYWORDS
        THAT IS PUBLICLY DECLARED (SINCE URL CONTAINS THE WORD 'TABLE')
@@ -139,7 +135,7 @@ $(document).ready(function() {
     }
 
     /* IF INPUT IS NOT A VALID NUSMODS URL */
-    else if (!(test1 || test2)) {
+    else if (!test) {
       window.alert("Input URL does not seem to come from NUSMods or is invalid. Please enter a valid NUSMods timetable URL.");
       return false;
     }
@@ -163,64 +159,29 @@ $(document).ready(function() {
     
     if (valid) {
       var inputURL = address.val();
-      /* IF INPUT URL IS IN CONDENSED FORM */
-      if (inputURL.substr(0, 16) === 'http://modsn.us/') {
-        var redirectedURL = $.get('redirectURL.php',
-                                  {
-                                    address: address.val(),
-                                  },
-                                  function(data) {
-                                    return data;
-                                  });
-        console.log(redirectedURL);
-        var userSchedule = getSchedule(redirectedURL);
-        $.get('addEntryURL.php',
-              {
-                person: name.val(),
-                address: data,
-                schedule: userSchedule,
-                added: true
-              },
-              function(data) {
-                window.alert(data);
-                var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
-                if (data !== nameUsed) {
-                  name.attr("readonly", "true");
-                  window.sessionStorage.setItem("added", "true");
-                  $("#create-user").hide();
-                  $("#edit-self").show();
-                  dialog.dialog("close");
-                }
-                else {
-                  event.preventDefault();
-                }
-              });
-      }
       /* IF INPUT URL IS IN ORIGINAL FORM */
-      else {
-        var userSchedule = getSchedule(inputURL);
-        $.get('addEntryURL.php',
-              {
-                person: name.val(),
-                address: address.val(),
-                schedule: userSchedule,
-                added: true
-              },
-              function(data) {
-                window.alert(data);
-                var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
-                if (data !== nameUsed) {
-                  name.attr("readonly", "true");
-                  window.sessionStorage.setItem("added", "true");
-                  $("#create-user").hide();
-                  $("#edit-self").show();
-                  dialog.dialog("close");
-                }
-                else {
-                  event.preventDefault();
-                }
-              });
-      }
+      var userSchedule = getSchedule(inputURL);
+      $.get('addEntryURL.php',
+            {
+              person: name.val(),
+              address: address.val(),
+              schedule: userSchedule,
+              added: true
+            },
+            function(data) {
+              window.alert(data);
+              var nameUsed = "Name has been used by someone else in this session. Please enter in another name.";
+              if (data !== nameUsed) {
+                name.attr("readonly", "true");
+                window.sessionStorage.setItem("added", "true");
+                $("#create-user").hide();
+                $("#edit-self").show();
+                dialog.dialog("close");
+              }
+              else {
+                event.preventDefault();
+              }
+            });
     }
     else {
       event.preventDefault();
@@ -234,46 +195,23 @@ $(document).ready(function() {
     
     if (valid) {
       var inputURL = address.val();
-      /* IF INPUT URL IS IN CONDENSED VERSION */
-      if (inputURL.substr(0, 16) === 'http://modsn.us/') {
-        var redirectedURL = $.get('redirectURL.php',
-                                  {
-                                    address: address.val(),
-                                  },
-                                  function(data) {
-                                    return data;
-                                  });
-        console.log(redirectedURL);
-        $.get('addEntryURL.php',
-              {
-                person: name.val(),
-                address: data,
-                schedule: userSchedule,
-              },
-              function(data) {
-                window.alert(data);
-                dialog.dialog("close");
-              });
-      }
       /* IF INPUT URL IS IN ORIGINAL FORM */
-      else {
-        var userSchedule = getSchedule(JSON.parse(inputURL));
-        $.get('addEntryURL.php',
-              {
-                person: name.val(),
-                address: inputURL,
-                schedule: userSchedule
-              },
-              function(data) {
-                window.alert(data);
-              });
-      }
+      var userSchedule = getSchedule(JSON.parse(inputURL));
+      $.get('addEntryURL.php',
+            {
+              person: name.val(),
+              address: inputURL,
+              schedule: userSchedule
+            },
+            function(data) {
+              window.alert(data);
+            });
       dialog.dialog("close");
     }
     else {
       event.preventDefault();
-    } 
-  }
+    }
+  } 
   
   function submitUser() {
     if (window.sessionStorage.getItem("added") === "true") {

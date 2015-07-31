@@ -10,7 +10,7 @@
 session_start();
 
 /* ESTABLISH CONNECTION */
-$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+$db = new mysqli("mysql2.000webhost.com", "a9602174_orbital", "user12345", "a9602174_orbital");
 
 /* MYSQL QUERY TO RETRIEVE TABLE */
 $table = $db->query("SELECT person, url FROM " . $_SESSION['sessionID'] . " WHERE 1;");

@@ -7,7 +7,7 @@
   session_start();
 
   /* CREATE CONNECTION */
-  $mysqli = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+  $mysqli = new mysqli("mysql2.000webhost.com", "a9602174_orbital", "user12345", "a9602174_orbital");
   
   /* CHECKS CONNECTION */
   if ($mysqli->connect_errno) {

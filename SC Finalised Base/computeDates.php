@@ -9,7 +9,7 @@
 session_start();
 
 /* ESTABLISH CONNECTION */
-$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+$db = new mysqli("mysql2.000webhost.com", "a9602174_orbital", "user12345", "a9602174_orbital");
 
 $table = $db->query("SELECT dates FROM " . $_SESSION['sessionID'] . " WHERE 1;");
 $count = $table->num_rows;

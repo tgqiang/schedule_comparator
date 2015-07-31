@@ -9,7 +9,7 @@
 session_start();
 
 /* ESTABLISHES CONNECTION */
-$db = new mysqli("localhost", "865880", "Tgqiang1993", "865880");
+$db = new mysqli("mysql2.000webhost.com", "a9602174_orbital", "user12345", "a9602174_orbital");
 
 /* CHECKS IF USER IS A SESSION-CREATOR OR A JOINER */
 if (isset($_SESSION['create'])) {
