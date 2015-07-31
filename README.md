@@ -29,7 +29,7 @@ This web application works somewhat differently from Doodle Poll, contrary to ge
 **Project status:**
 * Link to video: https://www.youtube.com/watch?v=ZiJUVi7jKXE
 
-* Link to application: http://nusmia.ueuo.com/ 
+* Link to application: http://schedulecomparator.net46.net/ 
 
 * Application is now available for testing
 
@@ -132,6 +132,8 @@ _Features that we used in our Schedule Comparator so far that we managed to find
 
 *	Hopscotch (https://github.com/linkedin/hopscotch) for the application tutorial used
 
+* GitHub (https://github.com) for version control employed.
+
 ----
 
 # Project Log
@@ -170,8 +172,11 @@ Total hours together: 205
 |20| Debugging integration error in (19) | 8/7/2015 | 3 | Ran into some problems when trying to integrate (18) into application, thus debugging needed. |  |  |
 |21| Completion of timetable-comparison option, improved help dialog and code tidy-up | 9/7/2015 | 5 |  |  |  |
 |22| Integration of date-time feature in manual-comparison option | 12/7/2015 | 4 | Changing functionality of manual option: from dates to date-time |  |  |
-|23| Debugging after round 1 testing | 14/7/2015 | 8 | Testing and fixing of session creation functionality |  |  |
-|24| Integrating new interface for manual-comparison option | 15/7/2015 | 6 | Revised interface for receiving date-time inputs |  |  |
-|25| Revising computation function for manual-comparison option to account for date-time inputs and integrating MomentJS and moment-range | 16/7/2015 | 6 | Revised computation function to adjust for date-time inputs |  |  |
-|26| Meet-up #3 | 21/7/2015 | 4 | Deployment of application and round 2 testing (for session-join functionality) | 4 | Refining tutorial + UI |
-| | Accumulated hours |  | 161 |  | 96 | Total: not finalised |
+|23| Testing #1 |  |  |  |  | Testing application for bugs |
+|24| Debugging after round 1 testing | 14/7/2015 | 8 | Testing and fixing of session creation functionality |  |  |
+|25| Integrating new interface for manual-comparison option | 15/7/2015 | 6 | Revised interface for receiving date-time inputs |  |  |
+|26| Revising computation function for manual-comparison option to account for date-time inputs and integrating MomentJS and moment-range | 16/7/2015 | 6 | Revised computation function to adjust for date-time inputs |  |  |
+|27| Meet-up #3 | 21/7/2015 | 4 | Deployment of application and round 2 testing (for session-join functionality) | 4 | Refining tutorial + UI |
+|28| UI revamp + App tour |  |  |  |  | Addition of Hopscotch app tour |
+|29| Tutorial page revamp | 28/7/2015 | 3 | Making pictorials and modifying the help page for users’ ease of understanding how to use our application |  |  |
+| | Accumulated hours |  | 164 |  | 96 | Total: not finalised |
