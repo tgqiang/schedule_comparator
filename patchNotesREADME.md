@@ -1,6 +1,16 @@
 # Schedule Comparator
 Team Rocket's project for Orbital (Gemini)
 
+# 31/07/2015
+Changes/Notes:
+* Web application migrated over to previous and more stable server. (Thus losing functionality to accept condensed version of NUSMods timetable URL)
+* UI modifications and product tour currently under work-in-progress status
+
+Required commits:
+* UI modifications and product tour with Hopscotch (work in progress)
+
+----
+
 # 28/07/2015
 Changes/Notes:
 * Tutorial page simplified to pic-torials.
