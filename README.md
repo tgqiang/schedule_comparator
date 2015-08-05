@@ -27,7 +27,7 @@ Our project is to come up with a schedule comparison web application that helps 
 This web application works somewhat differently from Doodle Poll, contrary to general opinion. For Doodle Poll, a date is set and the group of people indicate in Doodle Poll whether they are available on that specified date or not. However, for our Schedule Comparator, everyone’s schedules are collated together and the comparator attempts to find a common date that everyone can meet up together. If there is not a single common date where everyone can meet up, certainly a compromise is needed in the schedules.
 
 **Project status:**
-* Link to video: https://www.youtube.com/watch?v=ZiJUVi7jKXE
+* Link to video: https://www.youtube.com/watch?v=ojZGxuiVCfk
 
 * Link to application: http://schedulecomparator.net46.net/ 
 
@@ -138,15 +138,15 @@ _Features that we used in our Schedule Comparator so far that we managed to find
 
 # Project Log
 
-We are currently close to finishing up our web application for Orbital. We are currently in the stage of refining the user interface and once that is done, we are more or less good to go.
+The application is completed.
 
 Specified here are the accumulated time figures. For more in-depth elaboration of how we used these hours, please see the spreadsheet below.
 
-Accumulated hours for Guo Qiang: 109
+Accumulated hours for Guo Qiang: 164
 
-Accumulated hours for Daphne: 96
+Accumulated hours for Daphne: 139
 
-Total hours together: 205
+Total hours together: 303
 
 |S/N|   What   |   Date   |   Guo Qiang (hrs)   |   Remarks   |   Daphne (hrs)  |  Remarks  |
 |:-:|:--------:|:--------:|:-------------------:|:-----------:|:---------------:|:---------:|
